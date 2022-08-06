@@ -5,7 +5,8 @@ import shap
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import GradientBoostingRegressor 
 from sklearn.model_selection import train_test_split
-
+import numpy as np
+import streamlit.components.v1 as components
 
 st.title("XAI Framework for evaluating explainability of black box ML-algorithms")
 
@@ -72,3 +73,27 @@ features = ["fixed acidity","volatile acidity","citric acid","residual sugar",
 #st.write("Dependence Plot")
 #ax = shap.dependence_plot("alcohol", gbr_shap_values, X_train)
 #st.pyplot(fig)
+
+
+# get the prediction and put them with the test data
+X_output = X_test.copy()
+X_output.loc[:, 'predict'] = np.round(gbr.predict(X_output),2)
+
+# randomly pick some observations
+random_picks = np.arange(1,330,50) # every 50 rows
+S = X_output.iloc[random_picks]
+
+shap.initjs()
+
+def shap_plot(j):
+    explainerModel = shap.TreeExplainer(gbr)
+    shap_values_Model = explainerModel.shap_values(S)
+    p = shap.force_plot(explainerModel.expected_value, shap_values_Model[j], S.iloc[[j]])
+    return p
+
+def st_shap(plot, height=None):
+    shap_html = f"<head>{shap.getjs()}</head><body>{plot.html()}</body>"
+    components.html(shap_html, height=height)
+
+
+#st_shap(shap.force_plot(explainer.expected_value, shap_values[0,:], X.iloc[0,:]))
