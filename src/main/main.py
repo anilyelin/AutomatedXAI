@@ -36,7 +36,7 @@ st.pyplot(fig)
 
 
 fig, ax = plt.subplots()
-
+st.write("Shap values")
 ax = shap.summary_plot(rfr_shap_values, X_train)
 st.pyplot(fig)
 
@@ -54,3 +54,21 @@ fig, ax = plt.subplots()
 
 ax = shap.summary_plot(gbr_shap_values, X_train, plot_type='bar')
 st.pyplot(fig)
+
+
+fig, ax = plt.subplots()
+st.write("Shap values")
+ax = shap.summary_plot(gbr_shap_values, X_train)
+st.pyplot(fig)
+
+st.subheader("Partial Dependence Plots")
+
+features = ["fixed acidity","volatile acidity","citric acid","residual sugar",
+       "chlorides","free sulfur dioxide","total sulfur dioxide","density","pH",
+       "sulphates","alcohol"]
+#option = st.selectbox("Select the feature for Partial Dependence Plot",features)
+
+#fig, ax = plt.subplots()
+#st.write("Dependence Plot")
+#ax = shap.dependence_plot("alcohol", gbr_shap_values, X_train)
+#st.pyplot(fig)
