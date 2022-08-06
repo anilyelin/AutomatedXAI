@@ -33,3 +33,18 @@ fig, ax = plt.subplots()
 
 ax = shap.summary_plot(rfr_shap_values, X_train, plot_type='bar')
 st.pyplot(fig)
+
+
+st.subheader("Black Box Algorithm 2: GradientBoostRegressor")
+
+gbr = GradientBoostingRegressor(random_state=0, n_estimators=10)
+gbr.fit(X_train, y_train)
+
+st.write("Gradient Boost Regressor Score: ", gbr.score(X_test, y_test))
+
+
+gbr_shap_values = shap.TreeExplainer(gbr).shap_values(X_train)
+fig, ax = plt.subplots()
+
+ax = shap.summary_plot(gbr_shap_values, X_train, plot_type='bar')
+st.pyplot(fig)
