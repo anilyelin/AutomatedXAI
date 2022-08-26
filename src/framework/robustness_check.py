@@ -1,6 +1,5 @@
 __author__ = "Anil Yelin"
 
-
 import pandas as pd
 import shap 
 from sklearn.ensemble import ExtraTreesClassifier
@@ -90,14 +89,42 @@ class RobustnessCheck():
         #plt.show(a)
         # calculating the f(x) value which is basically the sum of the 
         # base value and the sum of the shap values for that particular instance
-        print("Differnce from expected value and base value is: ", np.sum(shap_values[1]))
+        print("[No Changes] Difference is: ", np.sum(shap_values[1]))
     
+    def marginalChange(self):
+        """this method makes some marginal changes to a
+            particular data instance of the datasets."""
+        data = self.prepareData()
+        X_test = data[1]
+        instance = X_test.loc[[138]]
+        print("Instance with Index 138 with no changes")
+        print()
+        print(instance)
+        print("-----------------------------------------")
+        print()
+        print("Instance with Index 138 with marginal changes")
+        print()
+        instance['MDVP:Fo(Hz)'] = instance['MDVP:Fo(Hz)']+10
+        instance['MDVP:Fhi(Hz)'] = instance['MDVP:Fhi(Hz)']+10
+        instance['MDVP:Flo(Hz)'] = instance['MDVP:Flo(Hz)']+10
+        instance['PPE'] = instance['PPE']+0.2
+        instance['spread1'] = instance['spread1']+1
+        print(instance)
+        return instance
+
+    def explainInstance(self):
+        explainer = self.createExplainer()
+        
+        instance = self.marginalChange()
+
+        shap_values = explainer.shap_values(instance)
+        print("[Marginal Changes] Difference is: ", np.sum(shap_values[1]))
 
     def test(self):
         shap_values = self.getShapValues()
         self.explainIndividualInstance()
-
-
+        self.marginalChange()
+        self.explainInstance()
 
 
 if __name__ == "__main__":
