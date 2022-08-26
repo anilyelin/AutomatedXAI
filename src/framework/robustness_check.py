@@ -1,7 +1,6 @@
 __author__ = "Anil Yelin"
 
-from cmath import atan
-from multiprocessing.spawn import prepare
+
 import pandas as pd
 import shap 
 from sklearn.ensemble import ExtraTreesClassifier
@@ -78,13 +77,10 @@ class RobustnessCheck():
         """this method will use SHAP to 
         explain individual instances from the dataset by
         creating a shap force plot"""
-        model = self.trainModel()
-       
-
+    
         data = self.prepareData()
         X_test = data[1]
         instance = X_test.loc[[138]]
-        print(model.predict(X_test.loc[[138]]))
 
         explainer = self.createExplainer()
         shap_values = explainer.shap_values(instance)
@@ -92,15 +88,10 @@ class RobustnessCheck():
         #a = shap.force_plot(explainer.expected_value[1], shap_values[1], instance, 
         #matplotlib=True)
         #plt.show(a)
-        print("SHAP values for instance with index 138:")
-        print()
-        #print(shap_values)
-        print()
-        print("Expected values")
-        print()
-        print(explainer.expected_value[1])
-
-        
+        # calculating the f(x) value which is basically the sum of the 
+        # base value and the sum of the shap values for that particular instance
+        print("Differnce from expected value and base value is: ", np.sum(shap_values[1]))
+    
 
     def test(self):
         shap_values = self.getShapValues()
