@@ -1,4 +1,4 @@
-__author = "Anil Yelin"
+__author__ = "Anil Yelin"
 
 import eli5 
 import pandas as pd
