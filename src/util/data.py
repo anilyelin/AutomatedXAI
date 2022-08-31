@@ -29,4 +29,4 @@ class Data():
 
 if __name__ == "__main__":
     obj = Data()
-    obj.show()
+    obj.showHead()
