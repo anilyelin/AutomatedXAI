@@ -1,5 +1,6 @@
 __author__ = "Anil Yelin"
 
+from re import S
 import pandas as pd
 import matplotlib.pyplot as plt
 import shap
@@ -73,18 +74,27 @@ class ConsistencyCheck():
         shap_values = shap_values[0]
         return shap_values
 
-    def explainIndividualInstance(self):
+    def explainIndividualInstance(self, k):
         """this method will use SHAP to 
         explain individual instances from the dataset by
         creating a shap force plot and calculating 
-        the SHAP score"""
+        the SHAP score
+        param: 
+            k = number of randomly drawn samples from the dataset
+        return 
+            SHAP scores for the k samples"""
     
         data = self.prepareData()
         X_test = data[1]
-        instance = X_test.loc[[138]]
-
-        explainer = self.createExplainer()
-        shap_values = explainer.shap_values(instance)
+        X_test = X_test.sample(n=k)
+        index = list(X_test.index)
+        result = []
+        for elem in index:
+            instance = X_test.loc[[elem]]
+            explainer = self.createExplainer()
+            shap_values = explainer.shap_values(instance)
+            shapScore = explainer.expected_value[1] + np.sum(shap_values[1])
+            result.append(shapScore)
         #instance = explainer.shap_values(instance)
         #a = shap.force_plot(explainer.expected_value[1], shap_values[1], instance, 
         #matplotlib=True)
@@ -92,13 +102,14 @@ class ConsistencyCheck():
         # calculating the f(x) value which is basically the sum of the 
         # base value and the sum of the shap values for that particular instance
         print("SHAP Score for instance with [index 138] is: ", explainer.expected_value[1]+np.sum(shap_values[1]))
+        return result 
 
     @staticmethod
     def main():
         obj = ConsistencyCheck()
         obj.createExplainer()
         #print(obj.getShapValues())
-        obj.explainIndividualInstance()
+        print(obj.explainIndividualInstance(3))
 
 
 if __name__ == "__main__":
