@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import eli5
 from eli5.sklearn import PermutationImportance
+from numpy import linalg as LA
 
 #utility function
 @st.cache
@@ -190,9 +191,13 @@ with tab1:
             fx1 = explainer.expected_value[1]+np.sum(shap_values[1])
             fx2 = explainer1.expected_value[1]+np.sum(shap_values1[1])
             consistencyDifference = round(np.abs(fx1-fx2),4)
+            #calculate euclidean distance between shap vectors
+            consistencyEuclideanDistance = np.round(LA.norm(shap_values[1]-shap_values1[1]),4)
             tab1_col1, tab1_col2 = st.columns(2)
-            tab1_col1.metric(label="Explanation Difference", value=consistencyDifference)
-            tab1_col2.metric(label="Threshold Delta", value=round(np.abs(consistencyThreshold-consistencyDifference),4))
+            #tab1_col1.metric(label="Explanation Difference", value=consistencyDifference)
+            tab1_col1.metric(label="Euclidean Distance", value=consistencyEuclideanDistance)
+            tab1_col2.metric(label="Threshold Value", value=round(np.abs(consistencyThreshold-consistencyDifference),4))
+            
             
             #st.write("=======================================================================================")
             st.write("*******************************************************************************************")
