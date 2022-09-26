@@ -1,5 +1,5 @@
 __author__ = "Anil Yelin"
-__version__= "0.1"
+__version__= "0.3"
 
 import streamlit as st
 import pandas as pd
