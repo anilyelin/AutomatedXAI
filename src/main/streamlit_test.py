@@ -12,6 +12,7 @@ import numpy as np
 import eli5
 from eli5.sklearn import PermutationImportance
 from numpy import linalg as LA
+from scipy import spatial
 
 #utility function
 @st.cache
@@ -193,10 +194,20 @@ with tab1:
             consistencyDifference = round(np.abs(fx1-fx2),4)
             #calculate euclidean distance between shap vectors
             consistencyEuclideanDistance = np.round(LA.norm(shap_values[1]-shap_values1[1]),4)
-            tab1_col1, tab1_col2 = st.columns(2)
-            #tab1_col1.metric(label="Explanation Difference", value=consistencyDifference)
-            tab1_col1.metric(label="Euclidean Distance", value=consistencyEuclideanDistance)
-            tab1_col2.metric(label="Threshold Value", value=round(np.abs(consistencyThreshold-consistencyDifference),4))
+            #calculate cosine similarity
+            cosineSimilarity = 1-np.dot(shap_values[1],shap_values1[1].T)/(LA.norm(shap_values[1])*(LA.norm(shap_values1[1])))
+        
+            if distanceMeasure == "Euclidean Distance":
+                tab1_col1, tab1_col2 = st.columns(2)
+                #tab1_col1.metric(label="Explanation Difference", value=consistencyDifference)
+                tab1_col1.metric(label="Euclidean Distance", value=consistencyEuclideanDistance)
+                tab1_col2.metric(label="Threshold Value", value=round(np.abs(consistencyThreshold-consistencyDifference),4))
+            else:
+                tab1_col1, tab1_col2 = st.columns(2)
+                #tab1_col1.metric(label="Explanation Difference", value=consistencyDifference)
+                tab1_col1.metric(label="Cosine Similarity", value=np.round(cosineSimilarity,4))
+                tab1_col2.metric(label="Threshold Value", value=round(np.abs(consistencyThreshold-consistencyDifference),4))
+                
             
             
             #st.write("=======================================================================================")
@@ -312,8 +323,8 @@ with tab2:
     shapScoreMod = explainer.expected_value[1]+np.sum(shap_values_robustness[1])
     shapScoreDiff = np.round(np.abs(shapScoreOrig-shapScoreMod),4)
     tab2_col1, tab2_col2 = st.columns(2)
-    tab2_col1.metric("Difference between explanations",shapScoreDiff)
-    tab2_col2.metric("Delta Threshold", shapScoreDiff-robustnessThreshold)
+    tab2_col1.metric("Euclidean Distance",shapScoreDiff)
+    tab2_col2.metric("Delta Value", shapScoreDiff-robustnessThreshold)
 
 with tab3:
     st.subheader("Framework Component - Stability")
