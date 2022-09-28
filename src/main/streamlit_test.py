@@ -1,6 +1,7 @@
 __author__ = "Anil Yelin"
 __version__= "0.3"
 
+
 import streamlit as st
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
@@ -338,6 +339,9 @@ with tab3:
     expanderComponent3.write("""The component stability will analyse the explanations of 
     neighboring data points. The key assumption is that for neighboring data points the 
     explanations should also similar""")
+    tab3_kValue = st.number_input("Please enter the value k for neighboring data instances", min_value=1, max_value=3, value=3, step=1)
+    tab3_theta = st.number_input("Please enter the threshold value theta", min_value=0.01, max_value=0.5, step=0.01)
+    st.subheader("Stability Check for 111 & 112")
     st.write(X_test.loc[[111,112]])
     tmpDF = X_test.loc[[111,112]].copy()
     deltaDF = tmpDF.diff()
@@ -357,12 +361,129 @@ with tab3:
     instance_112 = X_test.loc[[112]]
     shap_values_112 = explainer.shap_values(instance_112)
     st_shap(shap.force_plot(explainer.expected_value[1], shap_values_112[1], instance_112))
-
+    shap_values_111_etc = explainer1.shap_values(instance_111)
+    shap_values_112_etc = explainer1.shap_values(instance_112)
+    st.write("ETC - SHAP Force Plot for instance 111")
+    st_shap(shap.force_plot(explainer1.expected_value[1], shap_values_111_etc[1], instance_111))
+    st.write("ETC - SHAP Force Plot for instance 112")    
+    st_shap(shap.force_plot(explainer1.expected_value[1], shap_values_112_etc[1], instance_112))
     tab3_col1, tab3_col2 = st.columns(2)
     stabilityDistance = np.round(LA.norm(shap_values_111[1]-shap_values_112[1]),4)
+    #tab3 delta
+    tab3_delta = tab3_theta-stabilityDistance
     tab3_col1.metric(label="Euclidean Distance", value=stabilityDistance)
-    tab3_col2.metric(label="Threshold Value", value=round(np.abs(consistencyThreshold-consistencyDifference),4))
+    tab3_col2.metric(label="Threshold Value", value=round(tab3_delta,4))
+    if tab3_delta >= 0:
+        st.success("(1) RFC: Threshold is maintained")
+    else:
+        st.error("(1) RFC: Threshold is not maintained")
+    
+    stabilityDistance111_112_etc = np.round(LA.norm(shap_values_111_etc[1]-shap_values_112_etc[1]),4)
+    tab33_delta = tab3_theta - stabilityDistance111_112_etc
+    tab33_col1, tab33_col2 = st.columns(2)
+    tab33_col1.metric(label="Euclidean Distance", value=stabilityDistance111_112_etc)
+    tab33_col2.metric(label="Threshold Value", value=np.round(tab33_delta,4))
+    if tab33_delta >=0:
+        st.success("Theta is maintained")
+    else:
+        st.error("Theta is not maintained")
+    st.write("*******************************************************************************************")
+    #####################################################################################
+    st.subheader("Stability Check for 112 & 113")
+    st.write(X_test.loc[[112,113]])
+    tmpDF = X_test.loc[[112,113]].copy()
+    deltaDF = tmpDF.diff()
+    deltaDF = deltaDF.tail(1)
+    deltaDF.index.rename("Delta", inplace=True)
+    st.write("Delta between feature values of row 112 and row 113")
+    st.write(deltaDF)
+    instance_113 = X_test.loc[[113]]
+    shap_values_113 = explainer.shap_values(instance_113)
+    shap_values_113_etc = explainer1.shap_values(instance_113)
+    shap_values_112_etc = explainer1.shap_values(instance_112)
+    st.write("RFC - SHAP Force Plot for instance 112")
+    st_shap(shap.force_plot(explainer.expected_value[1], shap_values_112[1], instance_112))
+    st.write("RFC - SHAP Force Plot for instance 113")
+    st_shap(shap.force_plot(explainer.expected_value[1], shap_values_113[1], instance_113))
+    st.write("ETC - SHAP Force Plot for instance 112")
+    st_shap(shap.force_plot(explainer1.expected_value[1], shap_values_112_etc[1], instance_112))
+    st.write("ETC - SHAP Force Plot for instance 113")
+    st_shap(shap.force_plot(explainer1.expected_value[1], shap_values_113_etc[1], instance_113))
+    stabilityDistance112_113 = np.round(LA.norm(shap_values_112[1]-shap_values_113[1]),4)
+    tab34_col1, tab34_col2 = st.columns(2)
+    
+    #tab3 delta
+    tab34_delta = tab3_theta-stabilityDistance112_113
+    tab34_col1.metric(label="Euclidean Distance", value=stabilityDistance112_113)
+    tab34_col2.metric(label="Threshold Value", value=round(tab34_delta,4))
+    if tab34_delta >= 0:
+        st.success("(1) RFC: Threshold is maintained")
+    else:
+        st.error("(1) RFC: Threshold is not maintained")
+    #tab35_col1, tab35_col2 = st.columns(2)
+    #tab35_col1.metric(label="RFC Euclidean Distance", value=1)
+    #tab35_col2.metric(label="Threshold Value", value=1)
 
+    stabilityDistance112_113_etc = np.round(LA.norm(shap_values_112_etc[1]-shap_values_113_etc[1]),4)
+    tab38_delta = tab3_theta - stabilityDistance112_113_etc
+    tab38_col1, tab38_col2 = st.columns(2)
+    tab38_col1.metric("ETC Euclidean Distance", value=stabilityDistance112_113_etc)
+    tab38_col2.metric("Theta Delta", value=tab38_delta)
+    if tab38_delta >= 0:
+        st.success("Thetha threshold is maintained")
+    else:
+        st.error("Thehta threshold is not maintained")
+    st.write("*******************************************************************************************")
+    #############################################
+    st.subheader("Stability Check for instance 68 & 69")
+    st.write(X_test.loc[[68,69]])
+    tmpDF = X_test.loc[[68,69]].copy()
+    deltaDF = tmpDF.diff()
+    deltaDF = deltaDF.tail(1)
+    deltaDF.index.rename("Delta", inplace=True)
+    st.write("Delta between feature values of row 68 and row 69")
+    st.write(deltaDF)
+
+    instance_68 = X_test.loc[[68]]
+    instance_69 = X_test.loc[[69]]
+    #rfc shap values
+    shap_values_68 = explainer.shap_values(instance_68)
+    shap_values_69 = explainer.shap_values(instance_69)
+    #etc shap_values
+    shap_values_68_etc = explainer1.shap_values(instance_68)
+    shap_values_69_etc = explainer1.shap_values(instance_69)
+
+    st.write("RFC SHAP Force Plot for instance 68")
+    st_shap(shap.force_plot(explainer.expected_value[1], shap_values_68[1], instance_68))
+    st.write("RFC SHAP Force Plot for instance 69")
+    st_shap(shap.force_plot(explainer.expected_value[1], shap_values_69[1], instance_69))
+    st.write("ETC SHAP Force Plot for instance 68")
+    st_shap(shap.force_plot(explainer1.expected_value[1], shap_values_68_etc[1], instance_68))
+    st.write("ETC SHAP Force Plot for instance 69")
+    st_shap(shap.force_plot(explainer1.expected_value[1], shap_values_69_etc[1], instance_69))
+
+    tab36_col1, tab36_col2 = st.columns(2)
+    stabilityDistance68_69 = np.round(LA.norm(shap_values_68[1]-shap_values_69[1]),4)
+    tab36_delta = tab3_theta - stabilityDistance68_69
+    tab36_col1.metric("RFC Euclidean distance", value=stabilityDistance68_69)
+    tab36_col2.metric("Theta Delta", value=tab36_delta)
+    if tab36_delta >= 0:
+        st.success("Threshold is maintained")
+    else:
+        st.error("Threshold is not maintained")
+
+    stabilityDistance68_69_etc = np.round(LA.norm(shap_values_68_etc[1]-shap_values_69_etc[1]),4)
+    tab37_delta = tab3_theta - stabilityDistance68_69_etc
+    tab37_col1, tab37_col2 = st.columns(2)
+    tab37_col1.metric("ETC Euclidean Distance", value=stabilityDistance68_69_etc)
+    tab37_col2.metric("Theta Delta", value=tab37_delta)
+    if tab37_delta >= 0:
+        st.success("Threshold is maintained")
+    else:
+        st.error("Threshold is not maintained")
+
+    st.write("*******************************************************************************************")
+    
 
 with tab4:
     st.subheader("Framework Component - Simplicity")
