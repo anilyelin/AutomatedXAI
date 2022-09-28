@@ -332,7 +332,30 @@ with tab3:
     expanderComponent3.write("""The component stability will analyse the explanations of 
     neighboring data points. The key assumption is that for neighboring data points the 
     explanations should also similar""")
-    st.write(X_test)
+    st.write(X_test.loc[[111,112]])
+    tmpDF = X_test.loc[[111,112]].copy()
+    deltaDF = tmpDF.diff()
+    deltaDF = deltaDF.tail(1)
+    deltaDF.index.rename("Delta", inplace=True)
+    st.write("Delta between feature values of row 111 and row 112")
+    st.write(deltaDF)
+
+    instance_111 = X_test.loc[[111]]
+    shap_values_111 = explainer.shap_values(instance_111)
+    #extra trees
+    #shap_values1 = explainer1.shap_values(instance)
+        
+    st.write("RFC - SHAP Force Plot for instance 111")
+    st_shap(shap.force_plot(explainer.expected_value[1], shap_values_111[1], instance_111))
+    st.write("RFC - SHAP Force Plot for instance 112")
+    instance_112 = X_test.loc[[112]]
+    shap_values_112 = explainer.shap_values(instance_112)
+    st_shap(shap.force_plot(explainer.expected_value[1], shap_values_112[1], instance_112))
+
+    tab3_col1, tab3_col2 = st.columns(2)
+    stabilityDistance = np.round(LA.norm(shap_values_111[1]-shap_values_112[1]),4)
+    tab3_col1.metric(label="Euclidean Distance", value=stabilityDistance)
+    tab3_col2.metric(label="Threshold Value", value=round(np.abs(consistencyThreshold-consistencyDifference),4))
 
 
 with tab4:
