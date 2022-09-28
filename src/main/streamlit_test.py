@@ -339,7 +339,7 @@ with tab3:
     expanderComponent3.write("""The component stability will analyse the explanations of 
     neighboring data points. The key assumption is that for neighboring data points the 
     explanations should also similar""")
-    tab3_kValue = st.number_input("Please enter the value k for neighboring data instances", min_value=1, max_value=3, value=3, step=1)
+    tab3_kValue = st.number_input("Please enter the value k for neighboring data instances", min_value=1, max_value=3, value=3, step=1, disabled=True)
     tab3_theta = st.number_input("Please enter the threshold value theta", min_value=0.01, max_value=0.5, step=0.01)
     st.subheader("Stability Check for 111 & 112")
     st.write(X_test.loc[[111,112]])
