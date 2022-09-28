@@ -171,7 +171,7 @@ with tab1:
     should deviate with respect to given theta threshold""")
 
     kNumber = st.number_input("Please enter a value for parameter k", min_value=1, max_value=len(X_test)-1, step=1)
-    consistencyThreshold = st.number_input("Please enter a value for threshold theta", min_value=0.1, max_value=1.0, step=0.01)
+    consistencyThreshold = st.number_input("Please enter a value for threshold theta", min_value=0.01, max_value=1.0, step=0.01)
     distanceMeasure = st.selectbox("Choose distance measure",['Euclidean Distance','Cosine Similarity'])
     st.write("Distance Measure is: ", distanceMeasure)
     st.write("Entered number k is ",kNumber)
@@ -201,18 +201,24 @@ with tab1:
                 tab1_col1, tab1_col2 = st.columns(2)
                 #tab1_col1.metric(label="Explanation Difference", value=consistencyDifference)
                 tab1_col1.metric(label="Euclidean Distance", value=consistencyEuclideanDistance)
-                tab1_col2.metric(label="Threshold Value", value=round(np.abs(consistencyThreshold-consistencyDifference),4))
+                tab1_col2.metric(label="Threshold Delta", value=round(consistencyThreshold-consistencyEuclideanDistance,4))
             else:
                 tab1_col1, tab1_col2 = st.columns(2)
                 #tab1_col1.metric(label="Explanation Difference", value=consistencyDifference)
                 tab1_col1.metric(label="Cosine Similarity", value=np.round(cosineSimilarity,4))
-                tab1_col2.metric(label="Threshold Value", value=round(np.abs(consistencyThreshold-consistencyDifference),4))
+                tab1_col2.metric(label="Threshold Delta", value=round(consistencyThreshold-consistencyEuclideanDistance,4))
+
+            tab1_difference = consistencyThreshold-consistencyEuclideanDistance
+            if tab1_difference >= 0:
+                st.success("Threshold is maintained")
+            else:
+                st.error("Threshold is not maintained")
                 
             
             
             #st.write("=======================================================================================")
             st.write("*******************************************************************************************")
-        st.success('Done!')
+        st.success('Calculation of SHAP values for the k instances is successful!')
     #for i in range(kNumber):
     #    instance = X_test.loc[[indexValue[i]]]
     #    shap_values = explainer.shap_values(instance)
