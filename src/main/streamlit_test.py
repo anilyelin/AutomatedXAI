@@ -218,7 +218,7 @@ with tab1:
             
             #st.write("=======================================================================================")
             st.write("*******************************************************************************************")
-        st.success('Calculation of SHAP values for the k instances is successful!')
+        st.success('Calculation of SHAP values for the k instances was successful!')
     #for i in range(kNumber):
     #    instance = X_test.loc[[indexValue[i]]]
     #    shap_values = explainer.shap_values(instance)
