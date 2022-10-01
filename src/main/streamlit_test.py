@@ -27,6 +27,24 @@ def convert_df(df):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
     return df.to_csv().encode('utf-8')
 
+
+def automatedChange(df, index):
+    """this function will apply automated
+    marginal changes to a particular row in a pandas 
+    dataframe 
+        input: 
+              df: pandas dataframe
+              index: integer to specify the row
+        returns:
+              modified pandas dataframe with respect to that row"""
+    row_mean = df.loc[index].mean()
+    row_std = df.loc[index].std()
+    noise = np.random.normal(0.0, 0.5, len(df.columns))
+    tmp = noise+df.loc[index]
+    print(noise)
+    df.loc[index, df.columns] = [df.loc[index][i]+noise[i] for i in range(len(df.columns))]
+    return df
+
 st.title("Automated Explainability Checker Framework v0.3")
 st.text("This streamlit app is a prototype for the proposed explainability framework\n"
 "proposed in my master thesis")
@@ -238,6 +256,10 @@ with tab2:
     st.write("The following table is showing the k data instances with its corresponding values")
     st.write(X_test.head(robustnessKNumber))
     X_test_copy = X_test.copy(deep=True)
+    st.info("You can either make manual changes or use the provided button for automated marginal changes")
+    if st.button("Apply automated marginal changes"):
+        st.write("Calling function for automated marginal changes")
+        applyMarginalChanges(X_test_copy)
     st.subheader("Marginal Changes")
     cols = list(X_test.columns)
     st.write(cols[0])
