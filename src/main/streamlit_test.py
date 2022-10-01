@@ -332,7 +332,7 @@ with tab2:
     shapScoreDiff = np.round(np.abs(shapScoreOrig-shapScoreMod),4)
     tab2_col1, tab2_col2 = st.columns(2)
     tab2_col1.metric("Euclidean Distance",shapScoreDiff)
-    tab2_col2.metric("Delta Value", shapScoreDiff-robustnessThreshold)
+    tab2_col2.metric("Delta Value", np.round(shapScoreDiff-robustnessThreshold,4))
 
 with tab3:
     st.subheader("Framework Component - Stability")
