@@ -1,7 +1,6 @@
 __author__ = "Anil Yelin"
 __version__= "0.3"
 
-
 import streamlit as st
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
@@ -243,67 +242,46 @@ with tab2:
     cols = list(X_test.columns)
     st.write(cols[0])
     c0 = st.number_input("Marginal Change for feature: "+cols[0])
-
     st.write(cols[1])
     c1 = st.number_input("Marginal Change for feature: "+cols[1])
-
     st.write(cols[2])
     c2 = st.number_input("Marginal Change for feature: "+cols[2])
-
     st.write(cols[3])
     c3 = st.number_input("Marginal Change for feature: "+cols[3])
-
     st.write(cols[4])
     c4 = st.number_input("Marginal Change for feature: "+cols[4])
-
     st.write(cols[5])
     c5 = st.number_input("Marginal Change for feature: "+cols[5])
-
     st.write(cols[6])
     c6 = st.number_input("Marginal Change for feature: "+cols[6])
-
     st.write(cols[7])
     c7 = st.number_input("Marginal Change for feature: "+cols[7])
-
     st.write(cols[8])
     c8 = st.number_input("Marginal Change for feature: "+cols[8])
-
     st.write(cols[0])
     c9 = st.number_input("Marginal Change for feature: "+cols[9])
-
     st.write(cols[10])
     c10 = st.number_input("Marginal Change for feature: "+cols[10])
-
     st.write(cols[11])
     c11 = st.number_input("Marginal Change for feature: "+cols[11])
-
     st.write(cols[12])
     c12 = st.number_input("Marginal Change for feature: "+cols[12])
-
     st.write(cols[13])
     c13 = st.number_input("Marginal Change for feature: "+cols[13])
-
     st.write(cols[14])
     c14 = st.number_input("Marginal Change for feature: "+cols[14])
-
     st.write(cols[15])
     c15 = st.number_input("Marginal Change for feature: "+cols[15])
-
     st.write(cols[16])
     c16 = st.number_input("Marginal Change for feature: "+cols[16])
-
     st.write(cols[17])
     c17 = st.number_input("Marginal Change for feature: "+cols[17])
-
     st.write(cols[18])
     c18 = st.number_input("Marginal Change for feature: "+cols[18])
-
     st.write(cols[19])
     c19 = st.number_input("Marginal Change for feature: "+cols[19])
-
     st.write(cols[20])
     c20 = st.number_input("Marginal Change for feature: "+cols[20])
-
     st.write(cols[21])
     c21 = st.number_input("Marginal Change for feature: "+cols[21])
 
