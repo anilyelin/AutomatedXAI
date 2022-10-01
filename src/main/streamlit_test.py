@@ -194,6 +194,9 @@ with tab1:
     st.write("Entered number k is ",kNumber)
     st.write("The following table is showing the k data instances with its corresponding values")
     st.write(X_test.head(kNumber))
+    # storing the results in a list for the table
+    tableEuclidean = []
+    tableTheta = []
     with st.spinner('Wait for it...'):
         for i in range(kNumber):
             instance = X_test.loc[[indexValue[i]]]
@@ -217,6 +220,8 @@ with tab1:
             if distanceMeasure == "Euclidean Distance":
                 tab1_col1, tab1_col2 = st.columns(2)
                 #tab1_col1.metric(label="Explanation Difference", value=consistencyDifference)
+                tableEuclidean.append(consistencyEuclideanDistance)
+                tableTheta.append(round(consistencyThreshold-consistencyEuclideanDistance,4))
                 tab1_col1.metric(label="Euclidean Distance", value=consistencyEuclideanDistance)
                 tab1_col2.metric(label="Threshold Delta", value=round(consistencyThreshold-consistencyEuclideanDistance,4))
             else:
@@ -241,6 +246,11 @@ with tab1:
     #    shap_values = explainer.shap_values(instance)
     #    st.write("++"+modelChoice,"++SHAP Force Plot for instance with index: ", indexValue[i])
     #    st_shap(shap.force_plot(explainer.expected_value[1], shap_values[1], instance))
+
+    if st.button(label="Create Summary Table for Results"):
+        st.subheader("Summary Table")
+        tmpDF = pd.DataFrame(tableEuclidean)
+        st.write(tmpDF)
 
 with tab2:
     st.subheader("Framework Component - Robustness")
