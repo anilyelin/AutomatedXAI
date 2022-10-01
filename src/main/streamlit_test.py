@@ -41,7 +41,6 @@ def automatedChange(df, index):
     row_std = df.loc[index].std()
     noise = np.random.normal(0.0, 0.5, len(df.columns))
     tmp = noise+df.loc[index]
-    print(noise)
     df.loc[index, df.columns] = [df.loc[index][i]+noise[i] for i in range(len(df.columns))]
     return df
 
@@ -259,7 +258,9 @@ with tab2:
     st.info("You can either make manual changes or use the provided button for automated marginal changes")
     if st.button("Apply automated marginal changes"):
         st.write("Calling function for automated marginal changes")
-        applyMarginalChanges(X_test_copy)
+        automatedChange(X_test, 138)
+        st.success("Marginal changes applied successfully!")
+    
     st.subheader("Marginal Changes")
     cols = list(X_test.columns)
     st.write(cols[0])
