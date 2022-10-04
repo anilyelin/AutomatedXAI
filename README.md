@@ -30,3 +30,9 @@ cd AutomatedXAI/src/main/
 ```bash
 streamlit run streamlit-test.py
 ```
+
+## Architecture
+
+![Figure 1: Screenshot](https://github.com/anilyelin/AutomatedXAI/blob/main/src/main/method.png "Figure 1: Program Interface")
+
+### Screenshots
