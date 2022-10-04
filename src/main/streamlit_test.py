@@ -68,11 +68,6 @@ with randomForest_tab:
     test_size = st.number_input("Please enter the size of the test dataset", min_value=0.1, max_value=0.4, value=0.2)
     max_depth = st.number_input("Please enter the max depth for a tree", min_value=10, value=30)
     st.caption("Hyperparameter Summary")
-    #st.write("The entered number is ", n_estimators)
-    #st.write("The entered random state is ", random_state)
-    #st.write("The entered max depth size is ", max_depth)
-    #st.write("The entered test size is ", round(test_size,4))
-    #st.write("The training size is ", round(1-test_size,4))
     data = df
     target = data['status']
     features = data.drop(columns=['status','name'])
@@ -101,11 +96,6 @@ with extraTrees_tab:
     test_size1 = st.number_input("the size of the test dataset", min_value=test_size, max_value=0.4, disabled=True)
     max_depth1 = st.number_input("the max depth for a tree", min_value=max_depth, disabled=True)
     st.caption("Hyperparameter Summary")
-    #st.write("The entered number is ", n_estimators1)
-    #st.write("The entered random state is ", random_state1)
-    #st.write("The entered max depth size is ", max_depth1)
-    #st.write("The entered test size is ", round(test_size,4))
-    #st.write("The training size is ", round(1-test_size,4))
     data = df
     target = data['status']
     features = data.drop(columns=['status','name'])
@@ -235,10 +225,7 @@ with tab1:
                 st.success("Threshold is maintained")
             else:
                 st.error("Threshold is not maintained")
-                
-            
-            
-            #st.write("=======================================================================================")
+
             st.write("*******************************************************************************************")
         st.success('Calculation of SHAP values for the k instances was successful!')
     #for i in range(kNumber):
