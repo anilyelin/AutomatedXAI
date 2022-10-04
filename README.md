@@ -15,7 +15,9 @@ To run this project on your local computer you need to perform the following ste
 ```conda activate <env-name>```
 
 5. Navigate to the folder main
-```cd AutomatedXAI/src/main/```
+```bash 
+cd AutomatedXAI/src/main/
+```
 
 6. Type in the following command to start the Streamlit App
 
