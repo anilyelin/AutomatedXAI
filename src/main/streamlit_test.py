@@ -187,6 +187,7 @@ with tab1:
     # storing the results in a list for the table
     tableEuclidean = []
     tableTheta = []
+    tableIndex = []
     with st.spinner('Wait for it...'):
         for i in range(kNumber):
             instance = X_test.loc[[indexValue[i]]]
@@ -213,6 +214,7 @@ with tab1:
                 #storing results in a table
                 tableEuclidean.append(consistencyEuclideanDistance)
                 tableTheta.append(round(consistencyThreshold-consistencyEuclideanDistance,4))
+                tableIndex.append(indexValue[i])
                 tab1_col1.metric(label="Euclidean Distance", value=consistencyEuclideanDistance)
                 tab1_col2.metric(label="Threshold Delta", value=round(consistencyThreshold-consistencyEuclideanDistance,4))
             else:
@@ -240,14 +242,17 @@ with tab1:
         st.write("Below you can see a table with all results with respect to your parameters.")
         euclideanDF = pd.DataFrame(tableEuclidean)
         thetaDF = pd.DataFrame(tableTheta)
+        indexDF = pd.DataFrame(tableIndex)
         euclideanDF.columns = ["Euclidean Distance SHAP Vectors: RFC <--> ETC"]
         thetaDF.columns = ["Threshold Delta "+str(consistencyThreshold)]
-        df_col_merged = pd.concat([euclideanDF, thetaDF], axis=1)
+        indexDF.columns = ["Data Instance (index)"]
+        df_col_merged = pd.concat([indexDF, euclideanDF, thetaDF], axis=1)
+        df_col_merged.index += 1
         st.write(df_col_merged)
         tableFile = convert_df(df_col_merged)
         st.download_button(label="Download results as csv file",data=tableFile, file_name="result_table.csv")
         st.write("Threshold of: ", consistencyThreshold, " is not maintained for ",int(thetaDF.lt(0).sum()) , " instances of ", kNumber, " instances (in total)")
-
+        
 
 with tab2:
     st.subheader("Framework Component - Robustness")
