@@ -210,6 +210,7 @@ with tab1:
             if distanceMeasure == "Euclidean Distance":
                 tab1_col1, tab1_col2 = st.columns(2)
                 #tab1_col1.metric(label="Explanation Difference", value=consistencyDifference)
+                #storing results in a table
                 tableEuclidean.append(consistencyEuclideanDistance)
                 tableTheta.append(round(consistencyThreshold-consistencyEuclideanDistance,4))
                 tab1_col1.metric(label="Euclidean Distance", value=consistencyEuclideanDistance)
@@ -236,8 +237,17 @@ with tab1:
 
     if st.button(label="Create Summary Table for Results"):
         st.subheader("Summary Table")
-        tmpDF = pd.DataFrame(tableEuclidean)
-        st.write(tmpDF)
+        st.write("Below you can see a table with all results with respect to your parameters.")
+        euclideanDF = pd.DataFrame(tableEuclidean)
+        thetaDF = pd.DataFrame(tableTheta)
+        euclideanDF.columns = ["Euclidean Distance SHAP Vectors: RFC <--> ETC"]
+        thetaDF.columns = ["Threshold Delta "+str(consistencyThreshold)]
+        df_col_merged = pd.concat([euclideanDF, thetaDF], axis=1)
+        st.write(df_col_merged)
+        tableFile = convert_df(df_col_merged)
+        st.download_button(label="Download results as csv file",data=tableFile, file_name="result_table.csv")
+        st.write("Threshold of: ", consistencyThreshold, " is not maintained for ",int(thetaDF.lt(0).sum()) , " instances of ", kNumber, " instances (in total)")
+
 
 with tab2:
     st.subheader("Framework Component - Robustness")
