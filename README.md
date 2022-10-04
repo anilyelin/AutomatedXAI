@@ -36,3 +36,5 @@ streamlit run streamlit-test.py
 <img src="https://github.com/anilyelin/AutomatedXAI/blob/main/src/main/method.png" alt="drawing" width="300"/>
 
 ### Screenshots
+
+<img src="https://github.com/anilyelin/AutomatedXAI/blob/main/src/prototype.gif" alt="drawing" width="300"/>
