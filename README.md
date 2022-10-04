@@ -17,8 +17,8 @@ conda create --name <env_name> --file requirements.txt
 4. Activate the prior created environment
 
 ```bash
-conda activate <env-name>`
-``
+conda activate <env-name>
+```
 
 5. Navigate to the folder main
 ```bash 
