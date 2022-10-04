@@ -5,6 +5,6 @@ To run this project on your local computer you need to perform the following ste
 1. Download Anaconda which makes it easy to create environments and installing relevant libraries
 
 2. Clone this project to your PC
-    'git clone https://github.com/anilyelin/AutomatedXAI.git'
+    ```git clone https://github.com/anilyelin/AutomatedXAI.git```
 
 3. Test
