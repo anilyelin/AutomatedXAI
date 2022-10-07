@@ -271,7 +271,9 @@ with tab2:
     st.info("You can either make manual changes or use the provided button for automated marginal changes")
     if st.button("Apply automated marginal changes"):
         st.write("Calling function for automated marginal changes")
-        automatedChange(X_test, 138)
+        for i in range(robustnessKNumber):
+            automatedChange(X_test, indexValue[i])
+        #automatedChange(X_test, 138)
         st.success("Marginal changes applied successfully!")
     
     st.subheader("Marginal Changes")
