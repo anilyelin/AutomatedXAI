@@ -391,7 +391,10 @@ with tab2:
     tab2_thetaDF.columns = ["Threshold Delta "+str(robustnessThreshold)]
     tab2_indexDF.columns = ["Index Value"]
     tab2_df_col_merged = pd.concat([tab2_indexDF, tab2_euclideanDF, tab2_thetaDF], axis=1)
+    tab2_df_col_merged.index += 1
     st.write(tab2_df_col_merged)
+
+    st.write("Threshold of ", robustnessThreshold," is not maintained for ", int(tab2_thetaDF.lt(0).sum()), "instances of ", robustnessKNumber, " instances in total")
 
 
 
