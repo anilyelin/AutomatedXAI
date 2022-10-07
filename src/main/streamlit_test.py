@@ -368,15 +368,14 @@ with tab2:
         tableTheta_tab2.append(robustnessThresholdDifference)
 
         tableIndex_tab2.append(indexValue[i])
+        tab2_col1, tab2_col2 = st.columns(2)
+        tab2_col1.metric("Euclidean Distance",robustnessEuclideanDistance)
+        tab2_col2.metric("Delta Value", np.round(robustnessThresholdDifference,4))
+        st.write("*******************************************************************************************")
 
-
-
-    #shapScoreOrig = explainer.expected_value[1]+np.sum(shap_values[1])
-    #shapScoreMod = explainer.expected_value[1]+np.sum(shap_values_robustness[1])
-    #shapScoreDiff = np.round(np.abs(shapScoreOrig-shapScoreMod),4)
-    tab2_col1, tab2_col2 = st.columns(2)
-    tab2_col1.metric("Euclidean Distance",robustnessEuclideanDistance)
-    tab2_col2.metric("Delta Value", np.round(robustnessThresholdDifference,4))
+    #tab2_col1, tab2_col2 = st.columns(2)
+    #tab2_col1.metric("Euclidean Distance",robustnessEuclideanDistance)
+    #tab2_col2.metric("Delta Value", np.round(robustnessThresholdDifference,4))
 
     
     st.subheader("[Robustness] Summary Table")
