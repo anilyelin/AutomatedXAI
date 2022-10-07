@@ -347,28 +347,32 @@ with tab2:
     #X_test.loc[X_test.index[0], [cols[3]]] = [(X_test.iloc[3][cols[3]])+c3]
     st.write(X_test.loc[[manualIndex]])
     #st.write(X_test.head(robustnessKNumber))
-    #copy
-    instance_robustness_copy = X_test_copy.loc[[X_test.index[0]]]
-    shap_values_robustness_copy = explainer.shap_values(instance_robustness_copy)
-    #marginal change
-    instance_robustness = X_test.loc[[X_test.index[0]]]
-    shap_values_robustness = explainer.shap_values(instance_robustness)
-    st.write("Orignal Explanation for instance: ", X_test.index[0])
-    st_shap(shap.force_plot(explainer.expected_value[1], shap_values_robustness_copy[1], instance_robustness_copy))
-    st.write("Explanation after marginal changes for instance: ", X_test.index[0])
-    st_shap(shap.force_plot(explainer.expected_value[1], shap_values_robustness[1], instance_robustness))
+    ##### NEW FOR LOOP
+    for i in range(robustnessKNumber):
+        #copy
+        instance_robustness_copy = X_test_copy.loc[[indexValue[i]]]
+        shap_values_robustness_copy = explainer.shap_values(instance_robustness_copy)
+        #marginal change
+        instance_robustness = X_test.loc[[indexValue[i]]]
+        shap_values_robustness = explainer.shap_values(instance_robustness)
+        st.write("Orignal Explanation for instance: ", indexValue[i])
+        st_shap(shap.force_plot(explainer.expected_value[1], shap_values_robustness_copy[1], instance_robustness_copy))
+        st.write("Explanation after marginal changes for instance: ", indexValue[i])
+        st_shap(shap.force_plot(explainer.expected_value[1], shap_values_robustness[1], instance_robustness))
 
-    #calculation of euclidean distance
-    robustnessEuclideanDistance = np.round(LA.norm(shap_values_robustness_copy[1]-shap_values_robustness[1]),4)
-    tableEuclidean_tab2.append(robustnessEuclideanDistance)
-    #calculation of threshold difference
-    robustnessThresholdDifference = robustnessThreshold - robustnessEuclideanDistance
-    tableTheta_tab2.append(robustnessThresholdDifference)
+        #calculation of euclidean distance
+        robustnessEuclideanDistance = np.round(LA.norm(shap_values_robustness_copy[1]-shap_values_robustness[1]),4)
+        tableEuclidean_tab2.append(robustnessEuclideanDistance)
+        #calculation of threshold difference
+        robustnessThresholdDifference = robustnessThreshold - robustnessEuclideanDistance
+        tableTheta_tab2.append(robustnessThresholdDifference)
+
+        tableIndex_tab2.append(indexValue[i])
 
 
 
-    shapScoreOrig = explainer.expected_value[1]+np.sum(shap_values[1])
-    shapScoreMod = explainer.expected_value[1]+np.sum(shap_values_robustness[1])
+    #shapScoreOrig = explainer.expected_value[1]+np.sum(shap_values[1])
+    #shapScoreMod = explainer.expected_value[1]+np.sum(shap_values_robustness[1])
     #shapScoreDiff = np.round(np.abs(shapScoreOrig-shapScoreMod),4)
     tab2_col1, tab2_col2 = st.columns(2)
     tab2_col1.metric("Euclidean Distance",robustnessEuclideanDistance)
@@ -379,9 +383,11 @@ with tab2:
         #st.write("Below you can find a table with all results")
     tab2_euclideanDF = pd.DataFrame(tableEuclidean_tab2)
     tab2_thetaDF = pd.DataFrame(tableTheta_tab2)
+    tab2_indexDF = pd.DataFrame(tableIndex_tab2)
     tab2_euclideanDF.columns = ["Euclidean Distance SHAP Vectors: RFC <--> ETC"]
     tab2_thetaDF.columns = ["Threshold Delta "+str(robustnessThreshold)]
-    tab2_df_col_merged = pd.concat([tab2_euclideanDF, tab2_thetaDF], axis=1)
+    tab2_indexDF.columns = ["Index Value"]
+    tab2_df_col_merged = pd.concat([tab2_indexDF, tab2_euclideanDF, tab2_thetaDF], axis=1)
     st.write(tab2_df_col_merged)
 
 
