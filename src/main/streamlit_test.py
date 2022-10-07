@@ -275,6 +275,8 @@ with tab2:
             automatedChange(X_test, indexValue[i])
         #automatedChange(X_test, 138)
         st.success("Marginal changes applied successfully!")
+        st.write("Dataset after marginal changes")
+        st.write(X_test.head(robustnessKNumber))
     
     st.subheader("Marginal Changes")
     cols = list(X_test.columns)
