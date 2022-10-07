@@ -278,7 +278,12 @@ with tab2:
         st.write("Dataset after marginal changes")
         st.write(X_test.head(robustnessKNumber))
     
-    st.subheader("Marginal Changes")
+    st.subheader("Manual Marginal Changes")
+    manualIndex = st.number_input("Please enter an index to modify the data manually", min_value=X_test.index.min(), max_value=X_test.index.max())
+    if manualIndex not in X_test.index:
+        st.error("The entered index value does not exist. Please try again")
+    if manualIndex in X_test.index:
+        st.write("Manual Changes for data instance with index: ", manualIndex)
     cols = list(X_test.columns)
     st.write(cols[0])
     c0 = st.number_input("Marginal Change for feature: "+cols[0])
@@ -329,11 +334,13 @@ with tab2:
     
     deltas = [c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16,c17,c18,c19,c20,c21]
     for i in range(22):
-        X_test.loc[X_test.index[0], [cols[i]]] = [(X_test.iloc[0][cols[i]])+deltas[i]]
+        #X_test.loc[X_test.index[0], [cols[i]]] = [(X_test.iloc[0][cols[i]])+deltas[i]]
+        X_test.loc[manualIndex, [cols[i]]] = [(X_test.loc[manualIndex][cols[i]])+deltas[i]]
     #X_test.loc[X_test.index[0], [cols[1]]] = [(X_test.iloc[0][cols[1]])+c1]
     #X_test.loc[X_test.index[0], [cols[2]]] = [(X_test.iloc[2][cols[2]])+c2]
     #X_test.loc[X_test.index[0], [cols[3]]] = [(X_test.iloc[3][cols[3]])+c3]
-    st.write(X_test.head(robustnessKNumber))
+    st.write(X_test.loc[[manualIndex]])
+    #st.write(X_test.head(robustnessKNumber))
     #copy
     instance_robustness_copy = X_test_copy.loc[[X_test.index[0]]]
     shap_values_robustness_copy = explainer.shap_values(instance_robustness_copy)
