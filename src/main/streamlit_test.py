@@ -371,6 +371,10 @@ with tab2:
         tab2_col1, tab2_col2 = st.columns(2)
         tab2_col1.metric("Euclidean Distance",robustnessEuclideanDistance)
         tab2_col2.metric("Delta Value", np.round(robustnessThresholdDifference,4))
+        if robustnessThresholdDifference >=0:
+            st.success("Threshold Difference is maintained")
+        else:
+            st.error("Threshold Difference is not maintained")
         st.write("*******************************************************************************************")
 
     #tab2_col1, tab2_col2 = st.columns(2)
