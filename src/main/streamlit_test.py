@@ -385,7 +385,16 @@ with tab2:
         st_shap(shap.force_plot(explainer1.expected_value[1], etc_shap_values_robustness_copy[1], instance_robustness_copy))
         st.write("Explanation after marginal changes for instance: ", indexValue[i])
         st_shap(shap.force_plot(explainer1.expected_value[1], etc_shap_values_robustness[1], instance_robustness))
-        
+        #euclidean distance
+        etc_robustnessEuclideanDistance = np.round(LA.norm(etc_shap_values_robustness[1]-etc_shap_values_robustness_copy[1]),4)
+        etc_robustnessThresholdDifference = robustnessThreshold-etc_robustnessEuclideanDistance
+        tab22_col1, tab22_col2 = st.columns(2)
+        tab22_col1.metric("Euclidean Distance", etc_robustnessEuclideanDistance)
+        tab22_col2.metric("Delta Values", np.round(etc_robustnessThresholdDifference,4))
+        if etc_robustnessThresholdDifference >= 0:
+            st.success("[ETC] Threshold is maintained")
+        else:
+            st.error("[ETC] Threshold is not maintained")
         st.write("*******************************************************************************************")
 
     #tab2_col1, tab2_col2 = st.columns(2)
