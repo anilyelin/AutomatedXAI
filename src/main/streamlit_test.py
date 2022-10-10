@@ -387,13 +387,13 @@ with tab2:
     tab2_euclideanDF = pd.DataFrame(tableEuclidean_tab2)
     tab2_thetaDF = pd.DataFrame(tableTheta_tab2)
     tab2_indexDF = pd.DataFrame(tableIndex_tab2)
-    tab2_euclideanDF.columns = ["Euclidean Distance SHAP Vectors: RFC <--> ETC"]
-    tab2_thetaDF.columns = ["Threshold Delta "+str(robustnessThreshold)]
+    tab2_euclideanDF.columns = ["Euclidean Distance SHAP Vectors (RFC)"]
+    tab2_thetaDF.columns = ["Threshold Delta (RFC) "+str(robustnessThreshold)]
     tab2_indexDF.columns = ["Index Value"]
     tab2_df_col_merged = pd.concat([tab2_indexDF, tab2_euclideanDF, tab2_thetaDF], axis=1)
     tab2_df_col_merged.index += 1
     st.write(tab2_df_col_merged)
-
+    st.subheader("RFC")
     st.write("Threshold of ", robustnessThreshold," is not maintained for ", int(tab2_thetaDF.lt(0).sum()), "instances of ", robustnessKNumber, " instances in total")
 
 
