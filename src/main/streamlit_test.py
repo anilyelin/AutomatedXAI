@@ -14,6 +14,14 @@ from eli5.sklearn import PermutationImportance
 from numpy import linalg as LA
 from scipy import spatial
 
+with st.sidebar:
+    st.subheader("Help Section")
+    st.write("You can download a manual which explains how to use this Streamlit App")
+    with open("/Users/anilyelin/Documents/Masterarbeit/AutomatedXAI/AutomatedXAI/src/manual.pdf", "rb") as pdf_file:
+        PDFbyte = pdf_file.read()
+
+    st.download_button(label="Download Documentation and Manual", data=PDFbyte, file_name="manaul.pdf")
+
 #utility function
 @st.cache
 def convert_df(df):
@@ -430,6 +438,7 @@ with tab3:
     expanderComponent3.write("""The component stability will analyse the explanations of 
     neighboring data points. The key assumption is that for neighboring data points the 
     explanations should also similar""")
+    st.info("It has been found three neighboring data instances in the Parkinson dataset")
     tab3_kValue = st.number_input("Please enter the value k for neighboring data instances", min_value=1, max_value=3, value=3, step=1, disabled=True)
     tab3_theta = st.number_input("Please enter the threshold value theta", min_value=0.01, max_value=0.5, step=0.01)
     st.subheader("Stability Check for 111 & 112")
@@ -438,7 +447,7 @@ with tab3:
     deltaDF = tmpDF.diff()
     deltaDF = deltaDF.tail(1)
     deltaDF.index.rename("Delta", inplace=True)
-    st.write("Delta between feature values of row 111 and row 112")
+    st.info("Below you can see the delta values between instance 111 and 112")
     st.write(deltaDF)
 
     instance_111 = X_test.loc[[111]]
@@ -486,7 +495,7 @@ with tab3:
     deltaDF = tmpDF.diff()
     deltaDF = deltaDF.tail(1)
     deltaDF.index.rename("Delta", inplace=True)
-    st.write("Delta between feature values of row 112 and row 113")
+    st.info("Below you can see the delta values between instance 112 and 113")
     st.write(deltaDF)
     instance_113 = X_test.loc[[113]]
     shap_values_113 = explainer.shap_values(instance_113)
@@ -532,7 +541,7 @@ with tab3:
     deltaDF = tmpDF.diff()
     deltaDF = deltaDF.tail(1)
     deltaDF.index.rename("Delta", inplace=True)
-    st.write("Delta between feature values of row 68 and row 69")
+    st.info("Below you can see the delta values between instance 68 and 69")
     st.write(deltaDF)
 
     instance_68 = X_test.loc[[68]]
@@ -557,7 +566,7 @@ with tab3:
     stabilityDistance68_69 = np.round(LA.norm(shap_values_68[1]-shap_values_69[1]),4)
     tab36_delta = tab3_theta - stabilityDistance68_69
     tab36_col1.metric("RFC Euclidean distance", value=stabilityDistance68_69)
-    tab36_col2.metric("Theta Delta", value=tab36_delta)
+    tab36_col2.metric("Theta Delta", value=np.round(tab36_delta,4))
     if tab36_delta >= 0:
         st.success("Threshold is maintained")
     else:
@@ -567,7 +576,7 @@ with tab3:
     tab37_delta = tab3_theta - stabilityDistance68_69_etc
     tab37_col1, tab37_col2 = st.columns(2)
     tab37_col1.metric("ETC Euclidean Distance", value=stabilityDistance68_69_etc)
-    tab37_col2.metric("Theta Delta", value=tab37_delta)
+    tab37_col2.metric("Theta Delta", value=np.round(tab37_delta,4))
     if tab37_delta >= 0:
         st.success("Threshold is maintained")
     else:
