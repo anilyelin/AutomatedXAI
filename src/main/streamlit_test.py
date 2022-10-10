@@ -276,7 +276,7 @@ with tab2:
     st.write("The following table is showing the k data instances with its corresponding values")
     st.write(X_test.head(robustnessKNumber))
     X_test_copy = X_test.copy(deep=True)
-    st.info("You can either make manual changes or use the provided button for automated marginal changes")
+    st.info("Please press the button below or make manual marginal changes")
     if st.button("Apply automated marginal changes"):
         st.write("Calling function for automated marginal changes")
         for i in range(robustnessKNumber):
