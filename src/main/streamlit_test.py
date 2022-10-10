@@ -438,7 +438,7 @@ with tab3:
     expanderComponent3.write("""The component stability will analyse the explanations of 
     neighboring data points. The key assumption is that for neighboring data points the 
     explanations should also similar""")
-    st.info("It has been found three neighboring data instances in the Parkinson dataset")
+    st.info("Three neighboring data instances has been found in the Parkinson dataset")
     tab3_kValue = st.number_input("Please enter the value k for neighboring data instances", min_value=1, max_value=3, value=3, step=1, disabled=True)
     tab3_theta = st.number_input("Please enter the threshold value theta", min_value=0.01, max_value=0.5, step=0.01)
     st.subheader("Stability Check for 111 & 112")
@@ -471,22 +471,22 @@ with tab3:
     stabilityDistance = np.round(LA.norm(shap_values_111[1]-shap_values_112[1]),4)
     #tab3 delta
     tab3_delta = tab3_theta-stabilityDistance
-    tab3_col1.metric(label="Euclidean Distance", value=stabilityDistance)
+    tab3_col1.metric(label="RFC Euclidean Distance", value=stabilityDistance)
     tab3_col2.metric(label="Threshold Value", value=round(tab3_delta,4))
     if tab3_delta >= 0:
-        st.success("(1) RFC: Threshold is maintained")
+        st.success("RFC threshold is maintained")
     else:
-        st.error("(1) RFC: Threshold is not maintained")
+        st.error("RFC threshold is not maintained")
     
     stabilityDistance111_112_etc = np.round(LA.norm(shap_values_111_etc[1]-shap_values_112_etc[1]),4)
     tab33_delta = tab3_theta - stabilityDistance111_112_etc
     tab33_col1, tab33_col2 = st.columns(2)
-    tab33_col1.metric(label="Euclidean Distance", value=stabilityDistance111_112_etc)
+    tab33_col1.metric(label="ETC Euclidean Distance", value=stabilityDistance111_112_etc)
     tab33_col2.metric(label="Threshold Value", value=np.round(tab33_delta,4))
     if tab33_delta >=0:
-        st.success("Theta is maintained")
+        st.success("ETC threshold is maintained")
     else:
-        st.error("Theta is not maintained")
+        st.error("ETC threshold is not maintained")
     st.write("*******************************************************************************************")
     #####################################################################################
     st.subheader("Stability Check for 112 & 113")
@@ -514,12 +514,12 @@ with tab3:
     
     #tab3 delta
     tab34_delta = tab3_theta-stabilityDistance112_113
-    tab34_col1.metric(label="Euclidean Distance", value=stabilityDistance112_113)
+    tab34_col1.metric(label="RFC Euclidean Distance", value=stabilityDistance112_113)
     tab34_col2.metric(label="Threshold Value", value=round(tab34_delta,4))
     if tab34_delta >= 0:
-        st.success("(1) RFC: Threshold is maintained")
+        st.success("RFC: Threshold is maintained")
     else:
-        st.error("(1) RFC: Threshold is not maintained")
+        st.error("RFC: Threshold is not maintained")
     #tab35_col1, tab35_col2 = st.columns(2)
     #tab35_col1.metric(label="RFC Euclidean Distance", value=1)
     #tab35_col2.metric(label="Threshold Value", value=1)
@@ -530,9 +530,9 @@ with tab3:
     tab38_col1.metric("ETC Euclidean Distance", value=stabilityDistance112_113_etc)
     tab38_col2.metric("Theta Delta", value=tab38_delta)
     if tab38_delta >= 0:
-        st.success("Thetha threshold is maintained")
+        st.success("ETC threshold is maintained")
     else:
-        st.error("Thehta threshold is not maintained")
+        st.error("ETC threshold is not maintained")
     st.write("*******************************************************************************************")
     #############################################
     st.subheader("Stability Check for instance 68 & 69")
@@ -568,9 +568,9 @@ with tab3:
     tab36_col1.metric("RFC Euclidean distance", value=stabilityDistance68_69)
     tab36_col2.metric("Theta Delta", value=np.round(tab36_delta,4))
     if tab36_delta >= 0:
-        st.success("Threshold is maintained")
+        st.success("RFC threshold is maintained")
     else:
-        st.error("Threshold is not maintained")
+        st.error("RFC threshold is not maintained")
 
     stabilityDistance68_69_etc = np.round(LA.norm(shap_values_68_etc[1]-shap_values_69_etc[1]),4)
     tab37_delta = tab3_theta - stabilityDistance68_69_etc
@@ -578,9 +578,9 @@ with tab3:
     tab37_col1.metric("ETC Euclidean Distance", value=stabilityDistance68_69_etc)
     tab37_col2.metric("Theta Delta", value=np.round(tab37_delta,4))
     if tab37_delta >= 0:
-        st.success("Threshold is maintained")
+        st.success("ETC threshold is maintained")
     else:
-        st.error("Threshold is not maintained")
+        st.error("ETC threshold is not maintained")
 
     st.write("*******************************************************************************************")
     
