@@ -15,6 +15,12 @@ from numpy import linalg as LA
 from scipy import spatial
 
 with st.sidebar:
+    st.subheader("Quick Navigation")
+    st.markdown("[Dataset Overview](#dataset-overview)")
+    st.markdown("[Model Training](#model-training)")
+    st.markdown("[Explainability Section](#explainability-section)")
+    st.markdown("[Explainability Checker Framework](#explainability-checker-framework)")
+    st.markdown("[Summary](#summary)")
     st.subheader("Help Section")
     st.write("You can download a manual which explains how to use this Streamlit App")
     with open("/Users/anilyelin/Documents/Masterarbeit/AutomatedXAI/AutomatedXAI/src/manual.pdf", "rb") as pdf_file:
@@ -650,4 +656,9 @@ with tab5:
     st.dataframe(eli5.formatters.format_as_dataframe(eli5.explain_weights(perm_rfc, feature_names=X_test.columns.tolist())))
     st.subheader("Extra Trees Classifier Permutation Feature Importance")
     st.dataframe(eli5.formatters.format_as_dataframe(eli5.explain_weights(perf_etc, feature_names=X_test.columns.tolist())))
+
+
+
+st.header("Summary")
+st.write("To be implemented")
 
