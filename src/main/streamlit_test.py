@@ -401,12 +401,7 @@ with tab2:
         else:
             st.error("[ETC] Threshold is not maintained")
         st.write("*******************************************************************************************")
-
-    #tab2_col1, tab2_col2 = st.columns(2)
-    #tab2_col1.metric("Euclidean Distance",robustnessEuclideanDistance)
-    #tab2_col2.metric("Delta Value", np.round(robustnessThresholdDifference,4))
-
-    
+   
     st.subheader("[Robustness] Summary Table")
         #st.write("Below you can find a table with all results")
     tab2_euclideanDF = pd.DataFrame(tableEuclidean_tab2)
@@ -424,9 +419,8 @@ with tab2:
     st.write(tab2_df_col_merged)
     st.subheader("RFC")
     st.write("Threshold of ", robustnessThreshold," is not maintained for ", int(tab2_thetaDF.lt(0).sum()), "instances of ", robustnessKNumber, " instances in total")
-
-
-
+    st.subheader("ETC")
+    st.write("Threshold of ", robustnessThreshold," is not maintained for ", int(tab2_thetaDF_etc.lt(0).sum()), "instances of ", robustnessKNumber, " instances in total")
 
 
 ##### STABILITY COMPONENT #####################################################################################################
