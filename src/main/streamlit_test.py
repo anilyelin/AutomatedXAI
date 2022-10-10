@@ -334,6 +334,9 @@ with tab2:
     tableEuclidean_tab2 = []
     tableTheta_tab2 = []
     tableIndex_tab2 = []
+    tableEuclidean_tab2_etc = []
+    tableTheta_tab2_etc = []
+
 
     st.write("Resulting changes of data instance with index: ")
     
@@ -387,7 +390,9 @@ with tab2:
         st_shap(shap.force_plot(explainer1.expected_value[1], etc_shap_values_robustness[1], instance_robustness))
         #euclidean distance
         etc_robustnessEuclideanDistance = np.round(LA.norm(etc_shap_values_robustness[1]-etc_shap_values_robustness_copy[1]),4)
+        tableEuclidean_tab2_etc.append(etc_robustnessEuclideanDistance)
         etc_robustnessThresholdDifference = robustnessThreshold-etc_robustnessEuclideanDistance
+        tableTheta_tab2_etc.append(etc_robustnessThresholdDifference)
         tab22_col1, tab22_col2 = st.columns(2)
         tab22_col1.metric("Euclidean Distance", etc_robustnessEuclideanDistance)
         tab22_col2.metric("Delta Values", np.round(etc_robustnessThresholdDifference,4))
@@ -407,10 +412,14 @@ with tab2:
     tab2_euclideanDF = pd.DataFrame(tableEuclidean_tab2)
     tab2_thetaDF = pd.DataFrame(tableTheta_tab2)
     tab2_indexDF = pd.DataFrame(tableIndex_tab2)
-    tab2_euclideanDF.columns = ["Euclidean Distance SHAP Vectors (RFC)"]
+    tab2_euclideanDF_etc = pd.DataFrame(tableEuclidean_tab2_etc)
+    tab2_thetaDF_etc = pd.DataFrame(tableTheta_tab2_etc)
+    tab2_euclideanDF.columns = ["Euclidean Distance (RFC)"]
     tab2_thetaDF.columns = ["Threshold Delta (RFC) "+str(robustnessThreshold)]
+    tab2_euclideanDF_etc.columns = ["Euclidean Distance (ETC)"]
+    tab2_thetaDF_etc.columns = ["Threshold Delta (ETC)"]
     tab2_indexDF.columns = ["Index Value"]
-    tab2_df_col_merged = pd.concat([tab2_indexDF, tab2_euclideanDF, tab2_thetaDF], axis=1)
+    tab2_df_col_merged = pd.concat([tab2_indexDF, tab2_euclideanDF, tab2_thetaDF, tab2_euclideanDF_etc, tab2_thetaDF_etc], axis=1)
     tab2_df_col_merged.index += 1
     st.write(tab2_df_col_merged)
     st.subheader("RFC")
