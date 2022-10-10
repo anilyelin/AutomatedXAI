@@ -441,6 +441,13 @@ with tab3:
     st.info("Three neighboring data instances has been found in the Parkinson dataset")
     tab3_kValue = st.number_input("Please enter the value k for neighboring data instances", min_value=1, max_value=3, value=3, step=1, disabled=True)
     tab3_theta = st.number_input("Please enter the threshold value theta", min_value=0.01, max_value=0.5, step=0.01)
+    #tables
+    tab3_euclidean_distance_rfc = []
+    tab3_euclidean_distance_etc = []
+    tab3_theta_rfc = []
+    tab3_theta_etc = []
+    tab3_index = ["111 <-> 112","112 <-> 113", "68 <-> 69"]
+    # end tables
     st.subheader("Stability Check for 111 & 112")
     st.write(X_test.loc[[111,112]])
     tmpDF = X_test.loc[[111,112]].copy()
@@ -469,8 +476,10 @@ with tab3:
     st_shap(shap.force_plot(explainer1.expected_value[1], shap_values_112_etc[1], instance_112))
     tab3_col1, tab3_col2 = st.columns(2)
     stabilityDistance = np.round(LA.norm(shap_values_111[1]-shap_values_112[1]),4)
+    tab3_euclidean_distance_rfc.append(stabilityDistance)
     #tab3 delta
     tab3_delta = tab3_theta-stabilityDistance
+    tab3_theta_rfc.append(tab3_delta)
     tab3_col1.metric(label="RFC Euclidean Distance", value=stabilityDistance)
     tab3_col2.metric(label="Threshold Value", value=round(tab3_delta,4))
     if tab3_delta >= 0:
@@ -479,7 +488,9 @@ with tab3:
         st.error("RFC threshold is not maintained")
     
     stabilityDistance111_112_etc = np.round(LA.norm(shap_values_111_etc[1]-shap_values_112_etc[1]),4)
+    tab3_euclidean_distance_etc.append(stabilityDistance111_112_etc)
     tab33_delta = tab3_theta - stabilityDistance111_112_etc
+    tab3_theta_etc.append(tab33_delta)
     tab33_col1, tab33_col2 = st.columns(2)
     tab33_col1.metric(label="ETC Euclidean Distance", value=stabilityDistance111_112_etc)
     tab33_col2.metric(label="Threshold Value", value=np.round(tab33_delta,4))
@@ -510,10 +521,12 @@ with tab3:
     st.write("ETC - SHAP Force Plot for instance 113")
     st_shap(shap.force_plot(explainer1.expected_value[1], shap_values_113_etc[1], instance_113))
     stabilityDistance112_113 = np.round(LA.norm(shap_values_112[1]-shap_values_113[1]),4)
+    tab3_euclidean_distance_rfc.append(stabilityDistance112_113)
     tab34_col1, tab34_col2 = st.columns(2)
     
     #tab3 delta
     tab34_delta = tab3_theta-stabilityDistance112_113
+    tab3_theta_rfc.append(tab34_delta)
     tab34_col1.metric(label="RFC Euclidean Distance", value=stabilityDistance112_113)
     tab34_col2.metric(label="Threshold Value", value=round(tab34_delta,4))
     if tab34_delta >= 0:
@@ -525,10 +538,12 @@ with tab3:
     #tab35_col2.metric(label="Threshold Value", value=1)
 
     stabilityDistance112_113_etc = np.round(LA.norm(shap_values_112_etc[1]-shap_values_113_etc[1]),4)
+    tab3_euclidean_distance_etc.append(stabilityDistance112_113_etc)
     tab38_delta = tab3_theta - stabilityDistance112_113_etc
+    tab3_theta_etc.append(tab38_delta)
     tab38_col1, tab38_col2 = st.columns(2)
     tab38_col1.metric("ETC Euclidean Distance", value=stabilityDistance112_113_etc)
-    tab38_col2.metric("Theta Delta", value=tab38_delta)
+    tab38_col2.metric("Theta Delta", value=np.round(tab38_delta,4))
     if tab38_delta >= 0:
         st.success("ETC threshold is maintained")
     else:
@@ -564,7 +579,9 @@ with tab3:
 
     tab36_col1, tab36_col2 = st.columns(2)
     stabilityDistance68_69 = np.round(LA.norm(shap_values_68[1]-shap_values_69[1]),4)
+    tab3_euclidean_distance_rfc.append(stabilityDistance68_69)
     tab36_delta = tab3_theta - stabilityDistance68_69
+    tab3_theta_rfc.append(tab36_delta)
     tab36_col1.metric("RFC Euclidean distance", value=stabilityDistance68_69)
     tab36_col2.metric("Theta Delta", value=np.round(tab36_delta,4))
     if tab36_delta >= 0:
@@ -573,7 +590,10 @@ with tab3:
         st.error("RFC threshold is not maintained")
 
     stabilityDistance68_69_etc = np.round(LA.norm(shap_values_68_etc[1]-shap_values_69_etc[1]),4)
+    tab3_euclidean_distance_etc.append(stabilityDistance68_69)
+
     tab37_delta = tab3_theta - stabilityDistance68_69_etc
+    tab3_theta_etc.append(tab37_delta)
     tab37_col1, tab37_col2 = st.columns(2)
     tab37_col1.metric("ETC Euclidean Distance", value=stabilityDistance68_69_etc)
     tab37_col2.metric("Theta Delta", value=np.round(tab37_delta,4))
@@ -583,6 +603,26 @@ with tab3:
         st.error("ETC threshold is not maintained")
 
     st.write("*******************************************************************************************")
+
+    st.subheader("[Stability] Summary Table")
+    tab3_euclideanDF_rfc = pd.DataFrame(tab3_euclidean_distance_rfc)
+    tab3_thetaDF_rfc = pd.DataFrame(tab3_theta_rfc)
+    tab3_euclideanDF_etc = pd.DataFrame(tab3_euclidean_distance_etc)
+    tab3_thetaDF_etc = pd.DataFrame(tab3_theta_etc)
+    tab3_indexDF = pd.DataFrame(tab3_index)
+    tab3_indexDF.columns = ["Neigboring Data Instances"]
+    tab3_euclideanDF_rfc.columns = ["Euclidean Distance RFC"]
+    tab3_euclideanDF_etc.columns = ["Euclidean Distance ETC"]
+    tab3_thetaDF_rfc.columns = ["Theta RFC"]
+    tab3_thetaDF_etc.columns = ["Theta ETC"]
+    tab3_table_merge = pd.concat([tab3_indexDF, tab3_euclideanDF_rfc, tab3_thetaDF_rfc, tab3_euclideanDF_etc,tab3_thetaDF_etc], axis=1)
+    tab3_table_merge.index += 1
+    st.write(tab3_table_merge)
+    st.subheader("RFC")
+    st.write("Threshold of ", tab3_theta," is not maintained for ", int(tab3_thetaDF_rfc.lt(0).sum()), "instances of 3 instances in total")
+
+    st.subheader("ETC")
+    st.write("Threshold of ", tab3_theta," is not maintained for ", int(tab3_thetaDF_etc.lt(0).sum()), "instances of 3 instances in total")
     
 ##### SIMPLICITY COMPONENT ##################################################################################
 with tab4:
