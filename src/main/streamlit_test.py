@@ -350,6 +350,7 @@ with tab2:
     ##### NEW FOR LOOP
     for i in range(robustnessKNumber):
         #copy
+        st.subheader("Random Forest Classifier Results")
         instance_robustness_copy = X_test_copy.loc[[indexValue[i]]]
         shap_values_robustness_copy = explainer.shap_values(instance_robustness_copy)
         #marginal change
@@ -372,9 +373,19 @@ with tab2:
         tab2_col1.metric("Euclidean Distance",robustnessEuclideanDistance)
         tab2_col2.metric("Delta Value", np.round(robustnessThresholdDifference,4))
         if robustnessThresholdDifference >=0:
-            st.success("Threshold Difference is maintained")
+            st.success("[RFC] Threshold Difference is maintained")
         else:
-            st.error("Threshold Difference is not maintained")
+            st.error("[RFC] Threshold Difference is not maintained")
+        st.subheader("Extra Trees Classifier Results")
+        
+        etc_shap_values_robustness_copy = explainer1.shap_values(instance_robustness_copy)
+        #marginal changes
+        etc_shap_values_robustness = explainer1.shap_values(instance_robustness)
+        st.write("Orignal Explanation for instance: ", indexValue[i])
+        st_shap(shap.force_plot(explainer1.expected_value[1], etc_shap_values_robustness_copy[1], instance_robustness_copy))
+        st.write("Explanation after marginal changes for instance: ", indexValue[i])
+        st_shap(shap.force_plot(explainer1.expected_value[1], etc_shap_values_robustness[1], instance_robustness))
+        
         st.write("*******************************************************************************************")
 
     #tab2_col1, tab2_col2 = st.columns(2)
