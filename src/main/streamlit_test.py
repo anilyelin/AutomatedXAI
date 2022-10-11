@@ -631,6 +631,20 @@ with tab3:
     st.write("Threshold of ", tab3_theta," is not maintained for ", int(tab3_thetaDF_etc.lt(0).sum()), "instances of 3 instances in total")
     
 ##### SIMPLICITY COMPONENT ##################################################################################
+def calcNegativeSHAPScoreRFC(indexVal):
+    instance = X_test.loc[[indexVal]]
+    shap_values = explainer.shap_values(instance)
+    #convert to dataframe
+    df = pd.DataFrame({"Score":shap_values[1][0,:]}) 
+    return df.lt(0).sum()
+
+def calcNegativeSHAPScoreETC(indexVal):
+    instance = X_test.loc[[indexVal]]
+    shap_values = explainer1.shap_values(instance)
+    #convert to dataframe
+    df = pd.DataFrame({"Score":shap_values[1][0,:]}) 
+    return df.lt(0).sum()
+
 with tab4:
     st.subheader("Framework Component - Simplicity")
     expanderComponent4 = st.expander("See explanation")
@@ -638,8 +652,32 @@ with tab4:
     The simplicity component will check a given explanation for its length.
     The assumption for this component is that an explanation with fewer components
     is more explainable compared to an explanation with more components.""")
+    simplicityKNumber = st.number_input("Please enter a value for parameter k", min_value=1, max_value=len(X_test))
+    st.write("Parameter k is: ", simplicityKNumber)
+    st.write(X_test.head(simplicityKNumber))
+    st.info("Calculating for each of the k data instances the non negative SHAP scores")
+    simplicity_tab_rfc = []
+    simplicity_tab_etc = []
+    for i in range(simplicityKNumber):
+        st.subheader("RFC")
+        res_rfc = calcNegativeSHAPScoreRFC(indexValue[i])
+        st.write("The number of non negative SHAP scores for instance: ", indexValue[i], " is:", int(res_rfc))
+        simplicity_tab_rfc.append(int(res_rfc))
+        st.write(res_rfc)
+        st.subheader("ETC")
+        res_etc = calcNegativeSHAPScoreETC(indexValue[i])
+        simplicity_tab_etc.append(int(res_etc))
+        st.write("The number of non negative SHAP score for instance: ", indexValue[i], " is: ", int(res_etc))
+        st.write("*************************************************************************************")
 
-
+    st.subheader("[Simplicity] Summary Table")
+    st.info("Below you can find the summary table for the component simplicity")
+    simplicity_tab_rfc_df = pd.DataFrame(simplicity_tab_rfc)
+    simplicity_tab_etc_df = pd.DataFrame(simplicity_tab_etc)
+    simplicity_tab_rfc_df.columns = ["[RFC] Non negative SHAP scores"]
+    simplicity_tab_etc_df.columns = ["[ETC] Non negative SHAP scores"]
+    simplicity_tab_merged = pd.concat([simplicity_tab_rfc_df, simplicity_tab_etc_df],axis=1)
+    st.write(simplicity_tab_merged)
 ###### PERMUTATION FEATURE IMPORTANCE COMPONENT ############################################################
 
 with tab5:
@@ -673,6 +711,14 @@ with tab5:
 
 
 st.header("Summary")
+
+st.subheader("Conistency Check")
+
+st.subheader("Robustness Check")
+
+st.subheader("Stability Check")
+
+st.subheader("Simplicity Check")
 
 st.subheader("Permutation Feature Importance")
 if rfc_eli5_sum >= etc_eli5_sum:
