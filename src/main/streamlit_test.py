@@ -673,5 +673,10 @@ with tab5:
 
 
 st.header("Summary")
-st.write("To be implemented")
+
+st.subheader("Permutation Feature Importance")
+if rfc_eli5_sum >= etc_eli5_sum:
+    st.write("Conclusion: Black Box Model <RFC> has a higher total of weight of: ", np.round(rfc_eli5_sum,4))
+else:
+    st.write("Conclusion: Black Box Model <ETC> has a higher total of weight of: ", np.round(etc_eli5_sum,4))
 
