@@ -654,8 +654,21 @@ with tab5:
     perf_etc = PermutationImportance(etc).fit(X_test, y_test)
     st.subheader("Random Forest Classifier Permutation Feature Importance")
     st.dataframe(eli5.formatters.format_as_dataframe(eli5.explain_weights(perm_rfc, feature_names=X_test.columns.tolist())))
+    rfc_tmp_df = eli5.formatters.format_as_dataframe(eli5.explain_weights(perm_rfc, feature_names=X_test.columns.tolist()))
+    rfc_eli5_sum = rfc_tmp_df['weight'].sum()
+    
+    st.write("Total Weight: ", np.round(rfc_eli5_sum,4))
+   
     st.subheader("Extra Trees Classifier Permutation Feature Importance")
     st.dataframe(eli5.formatters.format_as_dataframe(eli5.explain_weights(perf_etc, feature_names=X_test.columns.tolist())))
+    etc_tmp_df = eli5.formatters.format_as_dataframe(eli5.explain_weights(perf_etc, feature_names=X_test.columns.tolist()))
+    etc_eli5_sum = etc_tmp_df['weight'].sum()
+    st.write("Total Weight: ", np.round(etc_eli5_sum,4))
+
+    if rfc_eli5_sum >= etc_eli5_sum:
+        st.write("Conclusion: Black Box Model <RFC> has a higher total of weight of: ", np.round(rfc_eli5_sum,4))
+    else:
+        st.write("Conclusion: Black Box Model <ETC> has a higher total of weight of: ", np.round(etc_eli5_sum,4))
 
 
 
