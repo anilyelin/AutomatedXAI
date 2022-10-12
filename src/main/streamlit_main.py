@@ -59,6 +59,19 @@ def automatedChange(df, index):
     df.loc[index, df.columns] = [df.loc[index][i]+noise[i] for i in range(len(df.columns))]
     return df
 
+def scoreCalculator(score_A, score_B):
+    """this function compares the score of the two models and 
+        displays the results as streamlit info 
+        banner
+            input: score_A of model A
+                   score B of model B
+            return info banner with model
+            with higher score"""
+    if score_A > score_B:
+        st.info("RFC achieved a higher score")
+    else:
+        st.info("ETC achieved a higher score")
+    
 st.title("Automated Explainability Checker Framework v0.5")
 st.text("This streamlit app is a prototype for the proposed explainability framework\n"
 "proposed in my master thesis")
@@ -438,7 +451,12 @@ with robustnessTab:
     st.write("Threshold of ", robustnessThreshold," is not maintained for ", int(tab2_thetaDF.lt(0).sum()), "instances of ", robustnessKNumber, " instances in total")
     st.subheader("ETC")
     st.write("Threshold of ", robustnessThreshold," is not maintained for ", int(tab2_thetaDF_etc.lt(0).sum()), "instances of ", robustnessKNumber, " instances in total")
-
+    robustnessScore_rfc = int(tab2_thetaDF.lt(0).sum())
+    robustnessScore_etc = int(tab2_thetaDF_etc.lt(0).sum())
+    if robustnessScore_rfc < robustnessScore_etc:
+        st.success("RFC model has a better score in terms of robustness")
+    else:
+        st.success("ETC model has a better score in terms of robustness")
 
 ##### STABILITY COMPONENT #####################################################################################################
 with stabilityTab:
@@ -634,6 +652,12 @@ with stabilityTab:
 
     st.subheader("ETC")
     st.write("Threshold of ", tab3_theta," is not maintained for ", int(tab3_thetaDF_etc.lt(0).sum()), "instances of 3 instances in total")
+    rfc_stabilityScore = int(tab3_thetaDF_rfc.lt(0).sum())
+    etc_stabilityScore = int(tab3_thetaDF_etc.lt(0).sum())
+    if rfc_stabilityScore < etc_stabilityScore:
+        st.success("RFC model has a better score in terms of stability component")
+    else:
+        st.success("ETC model has a better score in terms of stability component")
     
 ##### SIMPLICITY COMPONENT ##################################################################################
 def calcNegativeSHAPScoreRFC(indexVal):
@@ -666,24 +690,35 @@ with simplicityTab:
     for i in range(simplicityKNumber):
         st.subheader("RFC")
         res_rfc = calcNegativeSHAPScoreRFC(indexValue[i])
-        st.write("The number of non negative SHAP scores for instance: ", indexValue[i], " is:", int(res_rfc))
+        st.write("The number of negative SHAP scores for instance: ", indexValue[i], " is:", int(res_rfc), " of ", X_test.iloc[0].shape[0]," components")
         simplicity_tab_rfc.append(int(res_rfc))
         st.write(res_rfc)
         st.subheader("ETC")
         res_etc = calcNegativeSHAPScoreETC(indexValue[i])
         simplicity_tab_etc.append(int(res_etc))
-        st.write("The number of non negative SHAP score for instance: ", indexValue[i], " is: ", int(res_etc))
+        st.write("The number of negative SHAP score for instance: ", indexValue[i], " is: ", int(res_etc), " of ", X_test.iloc[0].shape[0]," components")
         st.write("*************************************************************************************")
 
     st.subheader("[Simplicity] Summary Table")
     st.info("Below you can find the summary table for the component simplicity")
     simplicity_tab_rfc_df = pd.DataFrame(simplicity_tab_rfc)
     simplicity_tab_etc_df = pd.DataFrame(simplicity_tab_etc)
-    simplicity_tab_rfc_df.columns = ["[RFC] Non negative SHAP scores"]
-    simplicity_tab_etc_df.columns = ["[ETC] Non negative SHAP scores"]
+    simplicity_tab_rfc_df.columns = ["[RFC] Negative SHAP scores"]
+    simplicity_tab_etc_df.columns = ["[ETC] Negative SHAP scores"]
     simplicity_tab_merged = pd.concat([simplicity_tab_rfc_df, simplicity_tab_etc_df],axis=1)
     st.write(simplicity_tab_merged)
     tableFile_simplicity = convert_df(simplicity_tab_merged)
+    rfc_sum = simplicity_tab_rfc_df["[RFC] Negative SHAP scores"].sum()
+    etc_sum = simplicity_tab_etc_df["[ETC] Negative SHAP scores"].sum()
+    denominator = simplicityKNumber*22
+    rfc_final_score = rfc_sum / denominator
+    etc_final_score = etc_sum / denominator
+    st.write("Sum of RFC: ", np.round(rfc_final_score*100, 4), "%")
+    st.write("Sum of ETC: ",np.round(etc_final_score*100,4), "%")
+    if rfc_final_score < etc_final_score:
+        st.success("RFC model has a better scoring in terms of the simplicity component")
+    else:
+        st.success("ETC model has a betterr scoring in terms of the simplicity component")
     st.download_button(label="Download results as csv file",data=tableFile_simplicity, file_name="result_table_simplicity.csv")
 ###### PERMUTATION FEATURE IMPORTANCE COMPONENT ############################################################
 
@@ -733,13 +768,29 @@ st.subheader("Robustness Check")
 
 st.write(tab2_df_col_merged)
 
+if robustnessScore_rfc < robustnessScore_etc:
+    st.success("RFC model has a better score in terms of robustness")
+else:
+        
+    st.success("ETC model has a better score in terms of robustness")
+
 st.subheader("Stability Check")
 
 st.write(tab3_table_merge)
 
+if rfc_stabilityScore < etc_stabilityScore:
+    st.success("RFC model has a better score in terms of stability component")
+else:
+    st.success("ETC model has a better score in terms of stability component")
+
 st.subheader("Simplicity Check")
 
 st.write(simplicity_tab_merged)
+
+if rfc_final_score < etc_final_score:
+    st.success("RFC model has a better scoring in terms of the simplicity component")
+else:
+    st.success("ETC model has a betterr scoring in terms of the simplicity component")
 
 st.subheader("Permutation Feature Importance")
 if rfc_eli5_sum >= etc_eli5_sum:
