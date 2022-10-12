@@ -431,6 +431,8 @@ with robustnessTab:
     tab2_df_col_merged = pd.concat([tab2_indexDF, tab2_euclideanDF, tab2_thetaDF, tab2_euclideanDF_etc, tab2_thetaDF_etc], axis=1)
     tab2_df_col_merged.index += 1
     st.write(tab2_df_col_merged)
+    tableFile_robustness = convert_df(tab2_df_col_merged)
+    st.download_button(label="Download results as csv file",data=tableFile_robustness, file_name="result_table_robustness.csv")
     st.subheader("RFC")
     st.write("Threshold of ", robustnessThreshold," is not maintained for ", int(tab2_thetaDF.lt(0).sum()), "instances of ", robustnessKNumber, " instances in total")
     st.subheader("ETC")
