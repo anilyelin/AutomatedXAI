@@ -626,6 +626,8 @@ with stabilityTab:
     tab3_table_merge = pd.concat([tab3_indexDF, tab3_euclideanDF_rfc, tab3_thetaDF_rfc, tab3_euclideanDF_etc,tab3_thetaDF_etc], axis=1)
     tab3_table_merge.index += 1
     st.write(tab3_table_merge)
+    tableFile_stability = convert_df(tab3_table_merge)
+    st.download_button(label="Download results as csv file",data=tableFile_stability, file_name="result_table_stability.csv")
     st.subheader("RFC")
     st.write("Threshold of ", tab3_theta," is not maintained for ", int(tab3_thetaDF_rfc.lt(0).sum()), "instances of 3 instances in total")
 
