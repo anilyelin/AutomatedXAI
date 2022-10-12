@@ -180,11 +180,11 @@ st.header("Explainability Checker Framework")
 st.write("""In the following tabs every can component of the proposed explainability 
 framework can be used for checking and evaluating the explainability of black box
 models with corresponding data""")
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Component Consistency", "Component Robustness", 
+consistencyTab, robustnessTab, stabilityTab, simplicityTab, permutationTab = st.tabs(["Component Consistency", "Component Robustness", 
 "Component Stability","Component Simplicity","Component Feature Importance"])
 
 ##### CONSISTENCY COMPONENT ########################################################################################
-with tab1:
+with consistencyTab:
     st.subheader("Framework Component - Consistency")
     expander1 = st.expander("See explanation")
     expander1.write("""The consistency component will check local explanations of the two black box
@@ -269,7 +269,7 @@ with tab1:
         st.write("Threshold of: ", consistencyThreshold, " is not maintained for ",int(thetaDF.lt(0).sum()) , " instances of ", kNumber, " instances (in total)")
         
 ###### ROBUSTNESS COMPONENT ################################################################################################
-with tab2:
+with robustnessTab:
     st.subheader("Framework Component - Robustness")
     expander2 = st.expander("See explanation")
     expander2.write("""The component robustness will analyse the explanations for specific data instances
@@ -438,7 +438,7 @@ with tab2:
 
 
 ##### STABILITY COMPONENT #####################################################################################################
-with tab3:
+with stabilityTab:
     st.subheader("Framework Component - Stability")
     expanderComponent3 = st.expander("See explanation")
     expanderComponent3.write("""The component stability will analyse the explanations of 
@@ -645,7 +645,7 @@ def calcNegativeSHAPScoreETC(indexVal):
     df = pd.DataFrame({"Score":shap_values[1][0,:]}) 
     return df.lt(0).sum()
 
-with tab4:
+with simplicityTab:
     st.subheader("Framework Component - Simplicity")
     expanderComponent4 = st.expander("See explanation")
     expanderComponent4.write("""
@@ -680,7 +680,7 @@ with tab4:
     st.write(simplicity_tab_merged)
 ###### PERMUTATION FEATURE IMPORTANCE COMPONENT ############################################################
 
-with tab5:
+with permutationTab:
     st.subheader("Framework Component - Permutation Feature Importance")
     expanderComponent5 = st.expander("See explanation")
     expanderComponent5.write("""The component Permutation Feature importance will analyse the model error
