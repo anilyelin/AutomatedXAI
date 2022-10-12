@@ -706,6 +706,8 @@ with permutationTab:
     st.subheader("Extra Trees Classifier Permutation Feature Importance")
     st.dataframe(eli5.formatters.format_as_dataframe(eli5.explain_weights(perf_etc, feature_names=X_test.columns.tolist())))
     etc_tmp_df = eli5.formatters.format_as_dataframe(eli5.explain_weights(perf_etc, feature_names=X_test.columns.tolist()))
+    tableFile_eli5_etc = convert_df(etc_tmp_df)
+    st.download_button(label="Download results as csv file",data=tableFile_eli5_etc, file_name="result_table_eli5_etc.csv")
     etc_eli5_sum = etc_tmp_df['weight'].sum()
     st.write("Total Weight: ", np.round(etc_eli5_sum,4))
 
