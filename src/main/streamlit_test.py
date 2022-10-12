@@ -682,6 +682,8 @@ with simplicityTab:
     simplicity_tab_etc_df.columns = ["[ETC] Non negative SHAP scores"]
     simplicity_tab_merged = pd.concat([simplicity_tab_rfc_df, simplicity_tab_etc_df],axis=1)
     st.write(simplicity_tab_merged)
+    tableFile_simplicity = convert_df(simplicity_tab_merged)
+    st.download_button(label="Download results as csv file",data=tableFile_simplicity, file_name="result_table_simplicity.csv")
 ###### PERMUTATION FEATURE IMPORTANCE COMPONENT ############################################################
 
 with permutationTab:
