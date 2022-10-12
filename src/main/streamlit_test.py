@@ -1,5 +1,5 @@
 __author__ = "Anil Yelin"
-__version__= "0.3"
+__version__= "0.5"
 
 import streamlit as st
 import pandas as pd
@@ -59,7 +59,7 @@ def automatedChange(df, index):
     df.loc[index, df.columns] = [df.loc[index][i]+noise[i] for i in range(len(df.columns))]
     return df
 
-st.title("Automated Explainability Checker Framework v0.3")
+st.title("Automated Explainability Checker Framework v0.5")
 st.text("This streamlit app is a prototype for the proposed explainability framework\n"
 "proposed in my master thesis")
 st.header("Dataset Overview")
