@@ -19,6 +19,7 @@ with st.sidebar:
     st.markdown("[Dataset Overview](#dataset-overview)")
     st.markdown("[Model Training](#model-training)")
     st.markdown("[Explainability Section](#explainability-section)")
+    st.markdown("[Explainability Checker Framework Architecture](#explainability-checker-framework-architecture)")
     st.markdown("[Explainability Checker Framework](#explainability-checker-framework)")
     st.markdown("[Summary](#summary)")
     st.subheader("Help Section")
@@ -153,7 +154,7 @@ st.pyplot(fig)
 
 #shap_values = explainer.shap_values(instance)
 
-st.title("Explainability Checker Framework")
+st.title("Explainability Checker Framework Architecture")
 st.text("""The following figure is showing the architecture of the explainability checker framework.
 There are in total five components. Both black box models will be analysed with respect
 to the components. The implementation of the framework component is the upcoming section.
