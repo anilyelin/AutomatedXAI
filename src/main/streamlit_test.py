@@ -252,21 +252,21 @@ with consistencyTab:
     #    st.write("++"+modelChoice,"++SHAP Force Plot for instance with index: ", indexValue[i])
     #    st_shap(shap.force_plot(explainer.expected_value[1], shap_values[1], instance))
 
-    if st.button(label="Create Summary Table for Results"):
-        st.subheader("Summary Table")
-        st.write("Below you can see a table with all results with respect to your parameters.")
-        euclideanDF = pd.DataFrame(tableEuclidean)
-        thetaDF = pd.DataFrame(tableTheta)
-        indexDF = pd.DataFrame(tableIndex)
-        euclideanDF.columns = ["Euclidean Distance SHAP Vectors: RFC <--> ETC"]
-        thetaDF.columns = ["Threshold Delta "+str(consistencyThreshold)]
-        indexDF.columns = ["Data Instance (index)"]
-        df_col_merged = pd.concat([indexDF, euclideanDF, thetaDF], axis=1)
-        df_col_merged.index += 1
-        st.write(df_col_merged)
-        tableFile = convert_df(df_col_merged)
-        st.download_button(label="Download results as csv file",data=tableFile, file_name="result_table.csv")
-        st.write("Threshold of: ", consistencyThreshold, " is not maintained for ",int(thetaDF.lt(0).sum()) , " instances of ", kNumber, " instances (in total)")
+    
+    st.subheader("[Consistency] Summary Table")
+    st.info("Below you can see a table with all results with respect to your parameters.")
+    euclideanDF = pd.DataFrame(tableEuclidean)
+    thetaDF = pd.DataFrame(tableTheta)
+    indexDF = pd.DataFrame(tableIndex)
+    euclideanDF.columns = ["Euclidean Distance SHAP Vectors: RFC <--> ETC"]
+    thetaDF.columns = ["Threshold Delta "+str(consistencyThreshold)]
+    indexDF.columns = ["Data Instance (index)"]
+    df_col_merged = pd.concat([indexDF, euclideanDF, thetaDF], axis=1)
+    df_col_merged.index += 1
+    st.write(df_col_merged)
+    tableFile = convert_df(df_col_merged)
+    st.download_button(label="Download results as csv file",data=tableFile, file_name="result_table.csv")
+    st.write("Threshold of: ", consistencyThreshold, " is not maintained for ",int(thetaDF.lt(0).sum()) , " instances of ", kNumber, " instances (in total)")
         
 ###### ROBUSTNESS COMPONENT ################################################################################################
 with robustnessTab:
