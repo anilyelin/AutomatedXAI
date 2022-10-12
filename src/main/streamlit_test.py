@@ -723,13 +723,23 @@ with permutationTab:
 
 st.header("Summary")
 
+st.info("Below you can find all relevant table at one place")
+
 st.subheader("Conistency Check")
+
+st.write(df_col_merged)
 
 st.subheader("Robustness Check")
 
+st.write(tab2_df_col_merged)
+
 st.subheader("Stability Check")
 
+st.write(tab3_table_merge)
+
 st.subheader("Simplicity Check")
+
+st.write(simplicity_tab_merged)
 
 st.subheader("Permutation Feature Importance")
 if rfc_eli5_sum >= etc_eli5_sum:
