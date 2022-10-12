@@ -265,7 +265,7 @@ with consistencyTab:
     df_col_merged.index += 1
     st.write(df_col_merged)
     tableFile = convert_df(df_col_merged)
-    st.download_button(label="Download results as csv file",data=tableFile, file_name="result_table.csv")
+    st.download_button(label="Download results as csv file",data=tableFile, file_name="result_table_consistency.csv")
     st.write("Threshold of: ", consistencyThreshold, " is not maintained for ",int(thetaDF.lt(0).sum()) , " instances of ", kNumber, " instances (in total)")
         
 ###### ROBUSTNESS COMPONENT ################################################################################################
