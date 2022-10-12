@@ -699,6 +699,8 @@ with permutationTab:
     st.subheader("Random Forest Classifier Permutation Feature Importance")
     st.dataframe(eli5.formatters.format_as_dataframe(eli5.explain_weights(perm_rfc, feature_names=X_test.columns.tolist())))
     rfc_tmp_df = eli5.formatters.format_as_dataframe(eli5.explain_weights(perm_rfc, feature_names=X_test.columns.tolist()))
+    tableFile_eli5_rfc = convert_df(rfc_tmp_df)
+    st.download_button(label="Download results as csv file",data=tableFile_eli5_rfc, file_name="result_table_eli5_rfc.csv")
     rfc_eli5_sum = rfc_tmp_df['weight'].sum()
     
     st.write("Total Weight: ", np.round(rfc_eli5_sum,4))
