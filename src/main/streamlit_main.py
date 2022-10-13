@@ -1,5 +1,5 @@
 __author__ = "Anil Yelin"
-__version__= "0.5"
+__version__= "0.9"
 
 import streamlit as st
 import pandas as pd
@@ -72,7 +72,7 @@ def scoreCalculator(score_A, score_B):
     else:
         st.info("ETC achieved a higher score")
     
-st.title("Automated Explainability Checker Framework v0.5")
+st.title("Automated Explainability Checker Framework v0.9")
 st.text("This streamlit app is a prototype for the proposed explainability framework\n"
 "proposed in my master thesis")
 st.header("Dataset Overview")
