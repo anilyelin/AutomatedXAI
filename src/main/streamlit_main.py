@@ -717,7 +717,7 @@ with simplicityTab:
     if rfc_final_score < etc_final_score:
         st.success("RFC model has a better scoring in terms of the simplicity component")
     else:
-        st.success("ETC model has a betterr scoring in terms of the simplicity component")
+        st.success("ETC model has a better scoring in terms of the simplicity component")
     st.download_button(label="Download results as csv file",data=tableFile_simplicity, file_name="result_table_simplicity.csv")
 ###### PERMUTATION FEATURE IMPORTANCE COMPONENT ############################################################
 
@@ -789,7 +789,7 @@ st.write(simplicity_tab_merged)
 if rfc_final_score < etc_final_score:
     st.success("RFC model has a better scoring in terms of the simplicity component")
 else:
-    st.success("ETC model has a betterr scoring in terms of the simplicity component")
+    st.success("ETC model has a better scoring in terms of the simplicity component")
 
 st.subheader("Permutation Feature Importance")
 if rfc_eli5_sum >= etc_eli5_sum:
