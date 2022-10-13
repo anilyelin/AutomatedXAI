@@ -692,7 +692,6 @@ with simplicityTab:
         res_rfc = calcNegativeSHAPScoreRFC(indexValue[i])
         st.write("The number of negative SHAP scores for instance: ", indexValue[i], " is:", int(res_rfc), " of ", X_test.iloc[0].shape[0]," components")
         simplicity_tab_rfc.append(int(res_rfc))
-        st.write(res_rfc)
         st.subheader("ETC")
         res_etc = calcNegativeSHAPScoreETC(indexValue[i])
         simplicity_tab_etc.append(int(res_etc))
