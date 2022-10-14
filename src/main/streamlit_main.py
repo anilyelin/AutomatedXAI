@@ -1,6 +1,7 @@
 __author__ = "Anil Yelin"
 __version__= "0.9"
 
+
 import streamlit as st
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
@@ -77,6 +78,9 @@ st.text("This streamlit app is a prototype for the proposed explainability frame
 "proposed in my master thesis")
 st.header("Dataset Overview")
 
+# this flag determines whether the user wants to use 
+# his custom dataset, by pressing the button in the Custom Dataset tab
+# this flag will be set to True
 customDFFlag = False
 
 
@@ -103,7 +107,8 @@ with customDatasetTab:
 #############################################################################################
 
 st.header("Model Training")
-randomForest_tab, extraTrees_tab = st.tabs(["Random Forest Classifier", "Extra Trees Classifier"])
+randomForest_tab, extraTrees_tab, rfc_custom_tab, etc_custom_tab = st.tabs(["Random Forest Classifier", "Extra Trees Classifier",
+ "Random Forest Classifier Custom Data", "Extra Trees Classifier Custom Data"])
 
 with randomForest_tab:
     blackBoxModels = ["Random Forest Classifier","Extra Trees Classifier"]
@@ -156,6 +161,33 @@ with extraTrees_tab:
     col4.metric("Test Size", round(test_size,4))
     col5.metric("Training Size", round(1-test_size,4))
     col6.metric("Model Score", round(etc.score(X_test, y_test),4))
+
+with rfc_custom_tab:
+    st.subheader("Random Forest Classifier")
+    n_estimators_rfc_custom = st.number_input("[RFC] Please enter the number of estimators", min_value=1, max_value=500, step=1)
+    random_state_rfc_custom = st.number_input("[RFC] Please enter a random state number", min_value=0, max_value=42, step=1)
+    test_size_rfc_custom = st.number_input("[RFC] Please enter the test size of the datasets", min_value=0.1, max_value=0.5, step=0.01)
+    max_depth_rfc_custom = st.number_input("[RFC] Please enter the max depth of a tree", min_value=1, max_value=30, step=1)
+    st.write("Hyperparameter Summary")
+    rfc_custom_col1, rfc_custom_col2, rfc_custom_col3, rfc_custom_col4, rfc_custom_col5, rfc_custom_col6 = st.columns(6)
+    rfc_custom_col1.metric("#Estimators", n_estimators_rfc_custom)
+    rfc_custom_col2.metric("Random State", random_state_rfc_custom)
+    rfc_custom_col3.metric("Tree Max Depth", max_depth_rfc_custom)
+    rfc_custom_col4.metric("Test Size",test_size_rfc_custom )
+    rfc_custom_col5.metric("Training Size", np.round(1-test_size_rfc_custom,4))
+    rfc_custom_col6.metric("Model Score", 1)
+
+    
+
+with etc_custom_tab:
+    st.subheader("Extra Trees Classifier")
+    n_estimators_etc_custom = st.number_input("[ETC] Please enter the number of estimators", min_value=1, max_value=500, step=1, disabled=True)
+    random_state_etc_custom = st.number_input("[ETC] Please enter a random state number", min_value=0, max_value=42, step=1, disabled=True)
+    test_size_etc_custom = st.number_input("[ETC] Please enter the test size of the dataset", min_value=0.1, max_value=0.5, step=0.01, disabled=True)
+    max_depth_etc_custom = st.number_input("[ETC] Please enter the max depth of a tree", min_value=1, max_value=30, step=1, disabled=True)
+    st.write("Hyperparameter Summary")
+
+
 
 ########################################################################################
 
