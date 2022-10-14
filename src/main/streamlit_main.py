@@ -76,12 +76,30 @@ st.title("Automated Explainability Checker Framework v0.9")
 st.text("This streamlit app is a prototype for the proposed explainability framework\n"
 "proposed in my master thesis")
 st.header("Dataset Overview")
-st.caption("Parkinson Dataset")
-df = pd.read_csv("/Users/anilyelin/Documents/Masterarbeit/AutomatedXAI/AutomatedXAI/src/data/parkinsons.csv")
 
-st.write(df.head())
-csvFile = convert_df(df)
-st.download_button(label="Download as csv file",data=csvFile, file_name="parkinsons.csv")
+customDFFlag = False
+
+
+defaultDatasetTab, customDatasetTab = st.tabs(["Default Datasets", "Custom Dataset"])
+with defaultDatasetTab:
+    st.caption("Parkinson Dataset")
+    df = pd.read_csv("/Users/anilyelin/Documents/Masterarbeit/AutomatedXAI/AutomatedXAI/src/data/parkinsons.csv")
+
+    st.write(df.head())
+    csvFile = convert_df(df)
+    st.download_button(label="Download as csv file",data=csvFile, file_name="parkinsons.csv")
+
+with customDatasetTab:
+    st.info("""You can upload your own dataset to this prototyp. Please note that the 
+    dataset has to be a csv file""")
+    csvFile = st.file_uploader("Choose a .csv file", accept_multiple_files=False)
+    if csvFile is not None:
+        customDF = pd.read_csv(csvFile)
+        st.write(customDF)
+
+    if st.button("Use this dataset for training"):
+        customDFFlag = True
+       
 #############################################################################################
 
 st.header("Model Training")
