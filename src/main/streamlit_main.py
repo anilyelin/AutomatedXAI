@@ -14,6 +14,7 @@ import eli5
 from eli5.sklearn import PermutationImportance
 from numpy import linalg as LA
 from scipy import spatial
+from sklearn.preprocessing import LabelEncoder
 
 with st.sidebar:
     st.subheader("Quick Navigation")
@@ -77,38 +78,17 @@ st.title("Automated Explainability Checker Framework v0.9")
 st.text("This streamlit app is a prototype for the proposed explainability framework\n"
 "proposed in my master thesis")
 st.header("Dataset Overview")
+st.caption("Parkinson Dataset")
+df = pd.read_csv("/Users/anilyelin/Documents/Masterarbeit/AutomatedXAI/AutomatedXAI/src/data/parkinsons.csv")
 
-# this flag determines whether the user wants to use 
-# his custom dataset, by pressing the button in the Custom Dataset tab
-# this flag will be set to True
-customDFFlag = False
-
-
-defaultDatasetTab, customDatasetTab = st.tabs(["Default Datasets", "Custom Dataset"])
-with defaultDatasetTab:
-    st.caption("Parkinson Dataset")
-    df = pd.read_csv("/Users/anilyelin/Documents/Masterarbeit/AutomatedXAI/AutomatedXAI/src/data/parkinsons.csv")
-
-    st.write(df.head())
-    csvFile = convert_df(df)
-    st.download_button(label="Download as csv file",data=csvFile, file_name="parkinsons.csv")
-
-with customDatasetTab:
-    st.info("""You can upload your own dataset to this prototyp. Please note that the 
-    dataset has to be a csv file""")
-    csvFile = st.file_uploader("Choose a .csv file", accept_multiple_files=False)
-    if csvFile is not None:
-        customDF = pd.read_csv(csvFile)
-        st.write(customDF)
-
-    if st.button("Use this dataset for training"):
-        customDFFlag = True
-       
+st.write(df.head())
+csvFile = convert_df(df)
+st.download_button(label="Download as csv file",data=csvFile, file_name="parkinsons.csv")
+      
 #############################################################################################
 
 st.header("Model Training")
-randomForest_tab, extraTrees_tab, rfc_custom_tab, etc_custom_tab = st.tabs(["Random Forest Classifier", "Extra Trees Classifier",
- "Random Forest Classifier Custom Data", "Extra Trees Classifier Custom Data"])
+randomForest_tab, extraTrees_tab = st.tabs(["Random Forest Classifier", "Extra Trees Classifier"])
 
 with randomForest_tab:
     blackBoxModels = ["Random Forest Classifier","Extra Trees Classifier"]
@@ -161,33 +141,6 @@ with extraTrees_tab:
     col4.metric("Test Size", round(test_size,4))
     col5.metric("Training Size", round(1-test_size,4))
     col6.metric("Model Score", round(etc.score(X_test, y_test),4))
-
-with rfc_custom_tab:
-    st.subheader("Random Forest Classifier")
-    n_estimators_rfc_custom = st.number_input("[RFC] Please enter the number of estimators", min_value=1, max_value=500, step=1)
-    random_state_rfc_custom = st.number_input("[RFC] Please enter a random state number", min_value=0, max_value=42, step=1)
-    test_size_rfc_custom = st.number_input("[RFC] Please enter the test size of the datasets", min_value=0.1, max_value=0.5, step=0.01)
-    max_depth_rfc_custom = st.number_input("[RFC] Please enter the max depth of a tree", min_value=1, max_value=30, step=1)
-    st.write("Hyperparameter Summary")
-    rfc_custom_col1, rfc_custom_col2, rfc_custom_col3, rfc_custom_col4, rfc_custom_col5, rfc_custom_col6 = st.columns(6)
-    rfc_custom_col1.metric("#Estimators", n_estimators_rfc_custom)
-    rfc_custom_col2.metric("Random State", random_state_rfc_custom)
-    rfc_custom_col3.metric("Tree Max Depth", max_depth_rfc_custom)
-    rfc_custom_col4.metric("Test Size",test_size_rfc_custom )
-    rfc_custom_col5.metric("Training Size", np.round(1-test_size_rfc_custom,4))
-    rfc_custom_col6.metric("Model Score", 1)
-
-    
-
-with etc_custom_tab:
-    st.subheader("Extra Trees Classifier")
-    n_estimators_etc_custom = st.number_input("[ETC] Please enter the number of estimators", min_value=1, max_value=500, step=1, disabled=True)
-    random_state_etc_custom = st.number_input("[ETC] Please enter a random state number", min_value=0, max_value=42, step=1, disabled=True)
-    test_size_etc_custom = st.number_input("[ETC] Please enter the test size of the dataset", min_value=0.1, max_value=0.5, step=0.01, disabled=True)
-    max_depth_etc_custom = st.number_input("[ETC] Please enter the max depth of a tree", min_value=1, max_value=30, step=1, disabled=True)
-    st.write("Hyperparameter Summary")
-
-
 
 ########################################################################################
 
