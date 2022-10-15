@@ -28,8 +28,14 @@ cd AutomatedXAI/src/main/
 6. Type in the following command to start the Streamlit App
 
 ```bash
-streamlit run streamlit-test.py
+streamlit run streamlit-main.py
 ```
+
+7. If you want to try out a custom dataset you have to run the following Streamlit App
+```bash
+streamlit run streamlit-custom.py
+```
+
 
 ## Architecture
 
