@@ -766,10 +766,10 @@ with permutationTab:
         st.write("Conclusion: Black Box Model <ETC> has a higher total of weight of: ", np.round(etc_eli5_sum,4))
 
 
-
+st.write("******************************************************************************************************************")
 st.header("Summary")
 
-st.info("Below you can find all relevant table at one place")
+st.info("Below you can find all relevant tables and scores at one place")
 
 st.subheader("Conistency Check")
 
@@ -788,6 +788,9 @@ else:
 st.subheader("Stability Check")
 
 st.write(tab3_table_merge)
+
+st.write("[RFC] Stability Score ", np.round(stability_score_rfc*100,2),"%")
+st.write("[ETC] Stability Score ", np.round(stability_score_etc*100,2),"%")
 
 if rfc_stabilityScore < etc_stabilityScore:
     st.success("RFC model has a better score in terms of stability component")
