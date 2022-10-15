@@ -658,9 +658,12 @@ with stabilityTab:
     st.download_button(label="Download results as csv file",data=tableFile_stability, file_name="result_table_stability.csv")
     st.subheader("RFC")
     st.write("Threshold of ", tab3_theta," is not maintained for ", int(tab3_thetaDF_rfc.lt(0).sum()), "instances of 3 instances in total")
-
+    stability_score_rfc = (3-int(tab3_thetaDF_rfc.lt(0).sum()))/3
+    st.write("[RFC] Stability Score ", np.round(stability_score_rfc*100,2),"%")
     st.subheader("ETC")
     st.write("Threshold of ", tab3_theta," is not maintained for ", int(tab3_thetaDF_etc.lt(0).sum()), "instances of 3 instances in total")
+    stability_score_etc = (3-int(tab3_thetaDF_etc.lt(0).sum()))/3
+    st.write("[ETC] Stability Score ", np.round(stability_score_etc*100,2),"%")
     rfc_stabilityScore = int(tab3_thetaDF_rfc.lt(0).sum())
     etc_stabilityScore = int(tab3_thetaDF_etc.lt(0).sum())
     if rfc_stabilityScore < etc_stabilityScore:
