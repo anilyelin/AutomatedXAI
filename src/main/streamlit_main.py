@@ -454,8 +454,12 @@ with robustnessTab:
     st.download_button(label="Download results as csv file",data=tableFile_robustness, file_name="result_table_robustness.csv")
     st.subheader("RFC")
     st.write("Threshold of ", robustnessThreshold," is not maintained for ", int(tab2_thetaDF.lt(0).sum()), "instances of ", robustnessKNumber, " instances in total")
+    robustness_rfc_score = (robustnessKNumber-int(tab2_thetaDF.lt(0).sum()))/robustnessKNumber
+    st.write("[RFC] Robustness Score", np.round(robustness_rfc_score*100,2),"%")
     st.subheader("ETC")
     st.write("Threshold of ", robustnessThreshold," is not maintained for ", int(tab2_thetaDF_etc.lt(0).sum()), "instances of ", robustnessKNumber, " instances in total")
+    robustness_etc_score = (robustnessKNumber-int(tab2_thetaDF_etc.lt(0).sum()))/robustnessKNumber
+    st.write("[ETC] Robustness Score ", np.round(robustness_etc_score*100,2),"%")
     robustnessScore_rfc = int(tab2_thetaDF.lt(0).sum())
     robustnessScore_etc = int(tab2_thetaDF_etc.lt(0).sum())
     if robustnessScore_rfc < robustnessScore_etc:
