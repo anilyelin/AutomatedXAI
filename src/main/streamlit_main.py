@@ -77,6 +77,7 @@ def scoreCalculator(score_A, score_B):
 st.title("Automated Explainability Checker Framework v0.9")
 st.text("This streamlit app is a prototype for the proposed explainability framework\n"
 "proposed in my master thesis")
+st.write("******************************************************************************************************************")
 st.header("Dataset Overview")
 st.caption("Parkinson Dataset")
 df = pd.read_csv("/Users/anilyelin/Documents/Masterarbeit/AutomatedXAI/AutomatedXAI/src/data/parkinsons.csv")
@@ -86,7 +87,7 @@ csvFile = convert_df(df)
 st.download_button(label="Download as csv file",data=csvFile, file_name="parkinsons.csv")
       
 #############################################################################################
-
+st.write("******************************************************************************************************************")
 st.header("Model Training")
 randomForest_tab, extraTrees_tab = st.tabs(["Random Forest Classifier", "Extra Trees Classifier"])
 
@@ -143,7 +144,7 @@ with extraTrees_tab:
     col6.metric("Model Score", round(etc.score(X_test, y_test),4))
 
 ########################################################################################
-
+st.write("******************************************************************************************************************")
 st.header("Explainability Section")
 st.write("This prototype will make use of SHAP to calculate the Shapley values for the features in the dataset\n"
 "Shapley values will measure the marginal contribution to the outcome of the model")
@@ -771,9 +772,11 @@ st.header("Summary")
 
 st.info("Below you can find all relevant tables and scores at one place")
 
-st.subheader("Conistency Check")
+st.subheader("Consistency Check")
 
 st.write(df_col_merged)
+
+st.write("******************************************************************************************************************")
 
 st.subheader("Robustness Check")
 
@@ -784,7 +787,7 @@ if robustnessScore_rfc < robustnessScore_etc:
 else:
         
     st.success("ETC model has a better score in terms of robustness")
-
+st.write("******************************************************************************************************************")
 st.subheader("Stability Check")
 
 st.write(tab3_table_merge)
@@ -796,7 +799,7 @@ if rfc_stabilityScore < etc_stabilityScore:
     st.success("RFC model has a better score in terms of stability component")
 else:
     st.success("ETC model has a better score in terms of stability component")
-
+st.write("******************************************************************************************************************")
 st.subheader("Simplicity Check")
 
 st.write(simplicity_tab_merged)
