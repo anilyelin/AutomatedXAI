@@ -23,6 +23,7 @@ with st.sidebar:
     st.markdown("[Explainability Section](#explainability-section)")
     st.markdown("[Explainability Checker Framework Architecture](#explainability-checker-framework-architecture)")
     st.markdown("[Explainability Checker Framework](#explainability-checker-framework)")
+    st.markdown("[Automated Parameter Selection](#automated-parameter-selection)")
     st.markdown("[Summary](#summary)")
     st.subheader("Help Section")
     st.write("You can download a manual which explains how to use this Streamlit App")
@@ -766,6 +767,38 @@ with permutationTab:
     else:
         st.write("Conclusion: Black Box Model <ETC> has a higher total of weight of: ", np.round(etc_eli5_sum,4))
 
+
+st.write("******************************************************************************************************************")
+
+def optimalParameter():
+    #defining the thresholds
+    consistencyThresholds = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
+    k = (len(X_test)//2)+1
+    r0 = []
+    for i in range(k):
+        instance = X_test.loc[[indexValue[i]]]
+        #rfc
+        shap_values = explainer.shap_values(instance)
+        #extra trees
+        shap_values1 = explainer1.shap_values(instance)
+        #euclidean norm
+        dist = LA.norm(shap_values[1] - shap_values1[1])
+        #result
+        result = consistencyThresholds[0]-dist
+        r0.append(result)
+    
+    return r0
+
+st.header("Automated Parameter Selection")
+st.info("In this section one can use provided button for calculating the optimal parameter Theta")
+components = ["Consistency", "Robustness", "Stability"]
+componentSelection = st.selectbox("Please choose the component", components)
+st.write("Choosen component is: ", componentSelection)
+
+if st.button("Calculate optimal parameters"):
+    st.write("Calling function")
+    result = optimalParameter()
+    st.write("Result is: ", result)
 
 st.write("******************************************************************************************************************")
 st.header("Summary")
