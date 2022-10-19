@@ -2,6 +2,7 @@ __author__ = "Anil Yelin"
 __version__= "0.9"
 
 
+from doctest import master
 import streamlit as st
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
@@ -782,7 +783,26 @@ def searchBiggestSum(arr):
     convert2npArray = np.array(tmp)
     return consistencyThresholds[np.int(np.where(convert2npArray==0)[0])]
 
+def searchNegativeVals4Robustness(arr):
+    consistencyThresholds = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0,14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
+    tmp = []
+    for elem in arr:
+        temporaryDF = pd.DataFrame(elem)
+        countNegativeVals = int(temporaryDF.gt(0).sum())
+        tmp.append(countNegativeVals)
+    convert2npArray = np.array(tmp)
+    position = 0
+    try:
+        position = np.where(convert2npArray>14)[0][0]
+        return consistencyThresholds[position]
+    except:
+        st.error("An optimal parameter theta could not be determined. This can related to marginal changes which is based on Gaussian noise. Please try again.")
+        return None
+    #return consistencyThresholds[position]
+
 def optimalParameter():
+    """this function will calculate the optimal parameter for the 
+       component consistency"""
     #defining the thresholds
     consistencyThresholds = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
     k = (len(X_test)//2)+2
@@ -812,6 +832,89 @@ def optimalParameter():
         
     return masterList
 
+
+def optimalParameterRobustness():
+    """this function will calculate the optimal value for theta
+       for the component robustness"""
+    consistencyThresholds = [0.01, 0.02, 0.03, 0.04, 0.05, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0,2]
+    k = (len(X_test)//2)+2
+    #copy original datasets
+    X_test_copy = X_test.copy(deep=True)
+    #apply marginal changes
+    for i in range(k):
+        automatedChange(X_test, indexValue[i])
+
+    r0 = []
+    r1 = []
+    r2 = []
+    r3 = []
+    r4 = []
+    r5 = []
+    r6 = []
+    r7 = []
+    r8 = []
+    r9 = []
+    r10 = []
+    r11 = []
+    r12 = []
+    r13 = []
+    r14 = []
+    r15 = []
+    r16 = []
+    r17 = []
+    r18 = []
+    r19 = []
+    masterList = [r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14, r15, r16, r17, r18, r19]
+    s0 = []
+    s1 = []
+    s2 = []
+    s3 = []
+    s4 = []
+    s5 = []
+    s6 = []
+    s7 = []
+    s8 = []
+    s9 = []
+    s10 = []
+    s11 = []
+    s12 = []
+    s13 = []
+    s14 = []
+    s15 = []
+    s16 = []
+    s17 = []
+    s18 = []
+    s19 = []
+    masterList2 = [s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19]
+    for elem in zip(consistencyThresholds, masterList, masterList2):
+        for i in range(k):
+            #original instance
+            instance_copy = X_test_copy.loc[[indexValue[i]]]
+            #modified instance
+            instance = X_test.loc[[indexValue[i]]]
+            #rfc original instance
+            shap_values_rfc_original = explainer.shap_values(instance_copy)
+            #etc original instance
+            shap_values_etc_original = explainer1.shap_values(instance_copy)
+            #rfc modified instance
+            shap_values_rfc_modified = explainer.shap_values(instance)
+            #etc modified instance 
+            shap_values_etc_modified = explainer1.shap_values(instance)
+            #euclidean norm rfc
+            dist_rfc = LA.norm(shap_values_rfc_original[1]-shap_values_rfc_modified[1])
+            #euclidean norm etc
+            dist_etc = LA.norm(shap_values_etc_original[1]-shap_values_etc_modified[1])  
+            #result rfc
+            result_rfc = elem[0] - dist_rfc 
+            #result etc
+            result_etc = elem[0] - dist_etc
+
+            elem[1].append(result_rfc)
+            elem[2].append(result_etc)
+
+    return masterList, masterList2
+    
+
 st.header("Automated Parameter Selection")
 st.info("In this section one can use provided button for calculating the optimal parameter Theta")
 components = ["Consistency", "Robustness", "Stability"]
@@ -820,10 +923,18 @@ st.write("Choosen component is: ", componentSelection)
 
 if st.button("Calculate optimal parameters"):
     st.write("Calling function")
-   
-    result = optimalParameter()
-    st.write("Optimal Parameter for component: ", componentSelection, " is: ", searchBiggestSum(optimalParameter()))
-    
+    if componentSelection == "Consistency":
+        result = optimalParameter()
+        st.write("Optimal Parameter for component: ", componentSelection, " is: ", searchBiggestSum(optimalParameter()))
+    elif componentSelection == "Robustness":
+        expanderRobustness = st.expander("See assumption")
+        expanderRobustness.write("""The optimal threshold for a black box model is determined by the amount of data instances which fulfill
+        a certain threshold. The amount of data instances should be at least 2/3 of the data instances.
+        The calculated parameters below are the optimal threshold for fulfilling 2/3 of the data instances.""")
+        st.write("[RFC] Optimal Parameter for component: ", componentSelection, " is: ", searchNegativeVals4Robustness(optimalParameterRobustness()[0])) 
+        st.write("[ETC] Optimal Parameter for component: ", componentSelection, " is: ", searchNegativeVals4Robustness(optimalParameterRobustness()[1])) 
+    elif componentSelection == "Stability":
+        st.write("Not implemented yet")   
 
 st.write("******************************************************************************************************************")
 st.header("Summary")
