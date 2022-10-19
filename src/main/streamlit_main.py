@@ -770,24 +770,47 @@ with permutationTab:
 
 st.write("******************************************************************************************************************")
 
+
+def searchBiggestSum(arr):
+    consistencyThresholds = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
+    tmp = []
+    for elem in arr:
+        temporaryDF = pd.DataFrame(elem)
+        countNegativeVals = int(temporaryDF.lt(0).sum())
+        tmp.append(countNegativeVals)
+    
+    convert2npArray = np.array(tmp)
+    return consistencyThresholds[np.int(np.where(convert2npArray==0)[0])]
+
 def optimalParameter():
     #defining the thresholds
     consistencyThresholds = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
-    k = (len(X_test)//2)+1
+    k = (len(X_test)//2)+2
     r0 = []
-    for i in range(k):
-        instance = X_test.loc[[indexValue[i]]]
-        #rfc
-        shap_values = explainer.shap_values(instance)
-        #extra trees
-        shap_values1 = explainer1.shap_values(instance)
-        #euclidean norm
-        dist = LA.norm(shap_values[1] - shap_values1[1])
-        #result
-        result = consistencyThresholds[0]-dist
-        r0.append(result)
-    
-    return r0
+    r1 = []
+    r2 = []
+    r3 = []
+    r4 = []
+    r5 = []
+    r6 = []
+    r7 = []
+    r8 = []
+    r9 = []
+    masterList = [r0,r1,r2,r3,r4,r5,r6,r7,r8,r9]
+    for elem in zip(consistencyThresholds, masterList):
+        for i in range(k):
+            instance = X_test.loc[[indexValue[i]]]
+            #rfc
+            shap_values = explainer.shap_values(instance)
+            #extra trees
+            shap_values1 = explainer1.shap_values(instance)
+            #euclidean norm
+            dist = LA.norm(shap_values[1] - shap_values1[1])
+            #result
+            result = elem[0]-dist
+            elem[1].append(result)
+        
+    return masterList
 
 st.header("Automated Parameter Selection")
 st.info("In this section one can use provided button for calculating the optimal parameter Theta")
@@ -797,8 +820,10 @@ st.write("Choosen component is: ", componentSelection)
 
 if st.button("Calculate optimal parameters"):
     st.write("Calling function")
+   
     result = optimalParameter()
-    st.write("Result is: ", result)
+    st.write("Optimal Parameter for component: ", componentSelection, " is: ", searchBiggestSum(optimalParameter()))
+    
 
 st.write("******************************************************************************************************************")
 st.header("Summary")
