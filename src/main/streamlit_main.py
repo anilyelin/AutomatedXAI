@@ -58,7 +58,7 @@ def automatedChange(df, index):
               modified pandas dataframe with respect to that row"""
     row_mean = df.loc[index].mean()
     row_std = df.loc[index].std()
-    noise = np.random.normal(0.0, 0.5, len(df.columns))
+    noise = np.random.normal(0.0, 0.05, len(df.columns))
     tmp = noise+df.loc[index]
     df.loc[index, df.columns] = [df.loc[index][i]+noise[i] for i in range(len(df.columns))]
     return df
@@ -793,10 +793,10 @@ def searchNegativeVals4Robustness(arr):
     convert2npArray = np.array(tmp)
     position = 0
     try:
-        position = np.where(convert2npArray>14)[0][0]
+        position = np.where(convert2npArray>=14)[0][0]
         return consistencyThresholds[position]
     except:
-        st.error("An optimal parameter theta could not be determined. This can related to marginal changes which is based on Gaussian noise. Please try again.")
+        st.error("An optimal parameter theta could not be determined. This can be related to marginal changes which is based on Gaussian noise. Please try again.")
         return None
     #return consistencyThresholds[position]
 
@@ -920,6 +920,10 @@ st.info("In this section one can use provided button for calculating the optimal
 components = ["Consistency", "Robustness", "Stability"]
 componentSelection = st.selectbox("Please choose the component", components)
 st.write("Choosen component is: ", componentSelection)
+
+
+#assumptionValue = st.slider('Select an assumption value [%]', min_value=0, max_value=100, step=1, value=67)
+#st.write("Selected assumption value is: ", assumptionValue, "%")
 
 if st.button("Calculate optimal parameters"):
     st.write("Calling function")
