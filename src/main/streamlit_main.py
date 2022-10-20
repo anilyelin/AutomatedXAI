@@ -3,6 +3,7 @@ __version__= "0.9"
 
 
 from doctest import master
+from lib2to3.refactor import MultiprocessRefactoringTool
 import streamlit as st
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
@@ -74,6 +75,7 @@ def scoreCalculator(score_A, score_B):
         st.info("RFC achieved a higher score")
     else:
         st.info("ETC achieved a higher score")
+
     
 st.title("Automated Explainability Checker Framework v0.9")
 st.text("This streamlit app is a prototype for the proposed explainability framework\n"
@@ -199,8 +201,8 @@ st.header("Explainability Checker Framework")
 st.write("""In the following tabs every can component of the proposed explainability 
 framework can be used for checking and evaluating the explainability of black box
 models with corresponding data""")
-consistencyTab, robustnessTab, stabilityTab, simplicityTab, permutationTab = st.tabs(["Component Consistency", "Component Robustness", 
-"Component Stability","Component Simplicity","Component Feature Importance"])
+consistencyTab, robustnessTab, stabilityTab, simplicityTab, simplicityTab2, permutationTab = st.tabs(["Component Consistency", "Component Robustness", 
+"Component Stability","Component Simplicity","Simplicity","Component Feature Importance"])
 
 ##### CONSISTENCY COMPONENT ########################################################################################
 with consistencyTab:
@@ -733,6 +735,31 @@ with simplicityTab:
     else:
         st.success("ETC model has a better scoring in terms of the simplicity component")
     st.download_button(label="Download results as csv file",data=tableFile_simplicity, file_name="result_table_simplicity.csv")
+
+
+with simplicityTab2:
+    st.subheader("Experimental Simplicity")
+    expK = st.number_input("[Simplicity Cutoff] Please enter a value for parameter k", min_value=1, max_value=len(X_test), step=1)
+    st.write("The entered number for parameter k is: ", expK)
+    cutoffThreshold= st.number_input("Please enter a cut off threshold", min_value=0.01, max_value=0.05, step=0.01)
+    st.write("The cutoff threshold is: ", cutoffThreshold)
+    st.write("The following table is showing the k data instances")
+    st.write(X_test.head(expK))
+    # we now need to calculate the shap value for each data instance
+    for i in range(expK):
+        instance = X_test.loc[[indexValue[i]]]
+        #rfc shap values
+        exp_rfc_shap_vals = explainer.shap_values(instance)
+        list2np = np.array(exp_rfc_shap_vals[1]).reshape(22,1)
+        rfc2df = pd.DataFrame(list2np)
+        #etc shap values
+        exp_etc_shap_vals = explainer1.shap_values(instance)
+        etc2df = pd.DataFrame(exp_etc_shap_vals[1])
+        st.subheader("RFC SHAP Values")
+        st.write(rfc2df)
+        st.subheader("ETC SHAP Values")
+        st.write(etc2df)
+        
 ###### PERMUTATION FEATURE IMPORTANCE COMPONENT ############################################################
 
 with permutationTab:
