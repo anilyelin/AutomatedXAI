@@ -773,6 +773,9 @@ st.write("**********************************************************************
 
 
 def searchBiggestSum(arr):
+    """this function is used by the component consistency
+       output:
+            returns an array where no negative values occur"""
     consistencyThresholds = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
     tmp = []
     for elem in arr:
@@ -784,6 +787,12 @@ def searchBiggestSum(arr):
     return consistencyThresholds[np.int(np.where(convert2npArray==0)[0])]
 
 def searchNegativeVals4Robustness(arr):
+    """this function is used for the optimal parameters
+       calculation of the component robustness
+       input: 
+            multidimensional array with SHAP values
+        returns 
+            optimal parameter on predefined thresholds"""
     consistencyThresholds = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0,14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
     tmp = []
     for elem in arr:
@@ -835,7 +844,10 @@ def optimalParameter():
 
 def optimalParameterRobustness():
     """this function will calculate the optimal value for theta
-       for the component robustness"""
+       for the component robustness
+            input: 
+            output: multidimensional array of SHAP values"""
+       
     consistencyThresholds = [0.01, 0.02, 0.03, 0.04, 0.05, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0,2]
     k = (len(X_test)//2)+2
     #copy original datasets
@@ -938,7 +950,8 @@ if st.button("Calculate optimal parameters"):
         st.write("[RFC] Optimal Parameter for component: ", componentSelection, " is: ", searchNegativeVals4Robustness(optimalParameterRobustness()[0])) 
         st.write("[ETC] Optimal Parameter for component: ", componentSelection, " is: ", searchNegativeVals4Robustness(optimalParameterRobustness()[1])) 
     elif componentSelection == "Stability":
-        st.write("Not implemented yet")   
+        st.write("[RFC] Optimal Parameter for component: ", componentSelection, " is")
+        st.write("[ETC] Optimal Parameter for component: ", componentSelection, " is")  
 
 st.write("******************************************************************************************************************")
 st.header("Summary")
