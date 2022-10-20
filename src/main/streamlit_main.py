@@ -24,7 +24,6 @@ with st.sidebar:
     st.markdown("[Explainability Section](#explainability-section)")
     st.markdown("[Explainability Checker Framework Architecture](#explainability-checker-framework-architecture)")
     st.markdown("[Explainability Checker Framework](#explainability-checker-framework)")
-    st.markdown("[Automated Parameter Selection](#automated-parameter-selection)")
     st.markdown("[Summary](#summary)")
     st.subheader("Help Section")
     st.write("You can download a manual which explains how to use this Streamlit App")
@@ -58,7 +57,7 @@ def automatedChange(df, index):
               modified pandas dataframe with respect to that row"""
     row_mean = df.loc[index].mean()
     row_std = df.loc[index].std()
-    noise = np.random.normal(0.0, 0.05, len(df.columns))
+    noise = np.random.normal(0.0, 0.5, len(df.columns))
     tmp = noise+df.loc[index]
     df.loc[index, df.columns] = [df.loc[index][i]+noise[i] for i in range(len(df.columns))]
     return df
@@ -766,192 +765,7 @@ with permutationTab:
     if rfc_eli5_sum >= etc_eli5_sum:
         st.write("Conclusion: Black Box Model <RFC> has a higher total of weight of: ", np.round(rfc_eli5_sum,4))
     else:
-        st.write("Conclusion: Black Box Model <ETC> has a higher total of weight of: ", np.round(etc_eli5_sum,4))
-
-
-st.write("******************************************************************************************************************")
-
-
-def searchBiggestSum(arr):
-    """this function is used by the component consistency
-       output:
-            returns an array where no negative values occur"""
-    consistencyThresholds = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
-    tmp = []
-    for elem in arr:
-        temporaryDF = pd.DataFrame(elem)
-        countNegativeVals = int(temporaryDF.lt(0).sum())
-        tmp.append(countNegativeVals)
-    
-    convert2npArray = np.array(tmp)
-    return consistencyThresholds[np.int(np.where(convert2npArray==0)[0])]
-
-def searchNegativeVals4Robustness(arr):
-    """this function is used for the optimal parameters
-       calculation of the component robustness
-       input: 
-            multidimensional array with SHAP values
-        returns 
-            optimal parameter on predefined thresholds"""
-    consistencyThresholds = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0,14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
-    tmp = []
-    for elem in arr:
-        temporaryDF = pd.DataFrame(elem)
-        countNegativeVals = int(temporaryDF.gt(0).sum())
-        tmp.append(countNegativeVals)
-    convert2npArray = np.array(tmp)
-    position = 0
-    try:
-        position = np.where(convert2npArray>=14)[0][0]
-        return consistencyThresholds[position]
-    except:
-        st.error("An optimal parameter theta could not be determined. This can be related to marginal changes which is based on Gaussian noise. Please try again.")
-        return None
-    #return consistencyThresholds[position]
-
-def optimalParameter():
-    """this function will calculate the optimal parameter for the 
-       component consistency"""
-    #defining the thresholds
-    consistencyThresholds = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
-    k = (len(X_test)//2)+2
-    r0 = []
-    r1 = []
-    r2 = []
-    r3 = []
-    r4 = []
-    r5 = []
-    r6 = []
-    r7 = []
-    r8 = []
-    r9 = []
-    masterList = [r0,r1,r2,r3,r4,r5,r6,r7,r8,r9]
-    for elem in zip(consistencyThresholds, masterList):
-        for i in range(k):
-            instance = X_test.loc[[indexValue[i]]]
-            #rfc
-            shap_values = explainer.shap_values(instance)
-            #extra trees
-            shap_values1 = explainer1.shap_values(instance)
-            #euclidean norm
-            dist = LA.norm(shap_values[1] - shap_values1[1])
-            #result
-            result = elem[0]-dist
-            elem[1].append(result)
-        
-    return masterList
-
-
-def optimalParameterRobustness():
-    """this function will calculate the optimal value for theta
-       for the component robustness
-            input: 
-            output: multidimensional array of SHAP values"""
-       
-    consistencyThresholds = [0.01, 0.02, 0.03, 0.04, 0.05, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0,2]
-    k = (len(X_test)//2)+2
-    #copy original datasets
-    X_test_copy = X_test.copy(deep=True)
-    #apply marginal changes
-    for i in range(k):
-        automatedChange(X_test, indexValue[i])
-
-    r0 = []
-    r1 = []
-    r2 = []
-    r3 = []
-    r4 = []
-    r5 = []
-    r6 = []
-    r7 = []
-    r8 = []
-    r9 = []
-    r10 = []
-    r11 = []
-    r12 = []
-    r13 = []
-    r14 = []
-    r15 = []
-    r16 = []
-    r17 = []
-    r18 = []
-    r19 = []
-    masterList = [r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14, r15, r16, r17, r18, r19]
-    s0 = []
-    s1 = []
-    s2 = []
-    s3 = []
-    s4 = []
-    s5 = []
-    s6 = []
-    s7 = []
-    s8 = []
-    s9 = []
-    s10 = []
-    s11 = []
-    s12 = []
-    s13 = []
-    s14 = []
-    s15 = []
-    s16 = []
-    s17 = []
-    s18 = []
-    s19 = []
-    masterList2 = [s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19]
-    for elem in zip(consistencyThresholds, masterList, masterList2):
-        for i in range(k):
-            #original instance
-            instance_copy = X_test_copy.loc[[indexValue[i]]]
-            #modified instance
-            instance = X_test.loc[[indexValue[i]]]
-            #rfc original instance
-            shap_values_rfc_original = explainer.shap_values(instance_copy)
-            #etc original instance
-            shap_values_etc_original = explainer1.shap_values(instance_copy)
-            #rfc modified instance
-            shap_values_rfc_modified = explainer.shap_values(instance)
-            #etc modified instance 
-            shap_values_etc_modified = explainer1.shap_values(instance)
-            #euclidean norm rfc
-            dist_rfc = LA.norm(shap_values_rfc_original[1]-shap_values_rfc_modified[1])
-            #euclidean norm etc
-            dist_etc = LA.norm(shap_values_etc_original[1]-shap_values_etc_modified[1])  
-            #result rfc
-            result_rfc = elem[0] - dist_rfc 
-            #result etc
-            result_etc = elem[0] - dist_etc
-
-            elem[1].append(result_rfc)
-            elem[2].append(result_etc)
-
-    return masterList, masterList2
-    
-
-st.header("Automated Parameter Selection")
-st.info("In this section one can use provided button for calculating the optimal parameter Theta")
-components = ["Consistency", "Robustness", "Stability"]
-componentSelection = st.selectbox("Please choose the component", components)
-st.write("Choosen component is: ", componentSelection)
-
-
-#assumptionValue = st.slider('Select an assumption value [%]', min_value=0, max_value=100, step=1, value=67)
-#st.write("Selected assumption value is: ", assumptionValue, "%")
-
-if st.button("Calculate optimal parameters"):
-    st.write("Calling function")
-    if componentSelection == "Consistency":
-        result = optimalParameter()
-        st.write("Optimal Parameter for component: ", componentSelection, " is: ", searchBiggestSum(optimalParameter()))
-    elif componentSelection == "Robustness":
-        expanderRobustness = st.expander("See assumption")
-        expanderRobustness.write("""The optimal threshold for a black box model is determined by the amount of data instances which fulfill
-        a certain threshold. The amount of data instances should be at least 2/3 of the data instances.
-        The calculated parameters below are the optimal threshold for fulfilling 2/3 of the data instances.""")
-        st.write("[RFC] Optimal Parameter for component: ", componentSelection, " is: ", searchNegativeVals4Robustness(optimalParameterRobustness()[0])) 
-        st.write("[ETC] Optimal Parameter for component: ", componentSelection, " is: ", searchNegativeVals4Robustness(optimalParameterRobustness()[1])) 
-    elif componentSelection == "Stability":
-        st.write("[RFC] Optimal Parameter for component: ", componentSelection, " is")
-        st.write("[ETC] Optimal Parameter for component: ", componentSelection, " is")  
+        st.write("Conclusion: Black Box Model <ETC> has a higher total of weight of: ", np.round(etc_eli5_sum,4))     
 
 st.write("******************************************************************************************************************")
 st.header("Summary")
