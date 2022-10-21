@@ -748,7 +748,9 @@ with simplicityTab2:
     # we now need to calculate the shap value for each data instance
     rfc_simp_score = []
     etc_simp_score = []
+    table_index_simp = []
     for i in range(expK):
+        table_index_simp.append(indexValue[i])
         instance = X_test.loc[[indexValue[i]]]
         #rfc shap values
         exp_rfc_shap_vals = explainer.shap_values(instance)
@@ -778,13 +780,25 @@ with simplicityTab2:
 
     st.subheader("[Simplicity Summary Table]")
     st.info("Below one can find the results for the k instances")
+    table_index_simp_df = pd.DataFrame(table_index_simp)
+    table_index_simp_df.columns = ["Index"]
     rfc_simp_df = pd.DataFrame(rfc_simp_score)
     rfc_simp_df.columns = ["RFC Simpl. Score"]
     etc_simp_df = pd.DataFrame(etc_simp_score)
     etc_simp_df.columns = ["ETC Simpl. Score"]
-    simp_df = pd.concat([rfc_simp_df, etc_simp_df], axis=1)
+    simp_df = pd.concat([table_index_simp_df, rfc_simp_df, etc_simp_df], axis=1)
+    simp_df.index += 1
     st.write(simp_df)
-    
+
+    simp_rfc_final_score = (rfc_simp_df["RFC Simpl. Score"].sum())/expK
+    simp_etc_final_score = (etc_simp_df["ETC Simpl. Score"].sum())/expK
+    st.write("[RFC] Final Score (Average): ", np.round(simp_rfc_final_score,2),"%")
+    st.write("[ETC] Final Score (Average): ",np.round(simp_etc_final_score,2) ,"%")
+    if simp_rfc_final_score > simp_etc_final_score:
+        st.success("RFC has a better final score for simplicity component")
+    else:
+        st.success("ETC has a better final score for simplicity component")
+
 
 ###### PERMUTATION FEATURE IMPORTANCE COMPONENT ############################################################
 
