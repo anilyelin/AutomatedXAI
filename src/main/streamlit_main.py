@@ -119,7 +119,6 @@ with randomForest_tab:
     rf_col5.metric("Training Size", round(1-test_size,4))
     rf_col6.metric("Model Score", round(rfc.score(X_test, y_test),4))
     
-
 with extraTrees_tab:
     st.subheader("Extra Trees Classifier")
     modelChoice1 = st.selectbox("Please choose a black box model for training",blackBoxModels,index=1,disabled=True)
@@ -172,8 +171,6 @@ ax = shap.summary_plot(rfc_shap_values, X_train, plot_type='bar')
 st.pyplot(fig)
 
 
-#shap_values = explainer.shap_values(instance)
-
 st.title("Explainability Checker Framework Architecture")
 st.text("""The following figure is showing the architecture of the explainability checker framework.
 There are in total five components. Both black box models will be analysed with respect
@@ -181,8 +178,6 @@ to the components. The implementation of the framework component is the upcoming
 In each component there will be one black box model which will perform better in terms
 of explainability.""")
 st.image("method.png", width=250, caption="Architecture Overview")
-
-
 
 ###############################################################################################################
 indexValue = list(X_test.index) #all index values of the X_test set will be stored in this list
@@ -373,8 +368,6 @@ with robustnessTab:
     tableIndex_tab2 = []
     tableEuclidean_tab2_etc = []
     tableTheta_tab2_etc = []
-
-
     st.write("Resulting changes of data instance with index: ")
     
     #this for loop populates the respective data instance with the manually changed values
@@ -382,12 +375,9 @@ with robustnessTab:
     for i in range(22):
         #X_test.loc[X_test.index[0], [cols[i]]] = [(X_test.iloc[0][cols[i]])+deltas[i]]
         X_test.loc[manualIndex, [cols[i]]] = [(X_test.loc[manualIndex][cols[i]])+deltas[i]]
-    #X_test.loc[X_test.index[0], [cols[1]]] = [(X_test.iloc[0][cols[1]])+c1]
-    #X_test.loc[X_test.index[0], [cols[2]]] = [(X_test.iloc[2][cols[2]])+c2]
-    #X_test.loc[X_test.index[0], [cols[3]]] = [(X_test.iloc[3][cols[3]])+c3]
+
     st.write(X_test.loc[[manualIndex]])
-    #st.write(X_test.head(robustnessKNumber))
-    ##### NEW FOR LOOP
+    
     for i in range(robustnessKNumber):
         #copy
         st.subheader("Random Forest Classifier Results")
