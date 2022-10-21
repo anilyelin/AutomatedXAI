@@ -1,9 +1,6 @@
 __author__ = "Anil Yelin"
 __version__= "0.9"
 
-
-from doctest import master
-from lib2to3.refactor import MultiprocessRefactoringTool
 import streamlit as st
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
