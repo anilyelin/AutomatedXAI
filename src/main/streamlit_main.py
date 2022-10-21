@@ -81,7 +81,7 @@ st.write("**********************************************************************
 st.header("Dataset Overview")
 st.caption("Parkinson Dataset")
 #df = pd.read_csv("/Users/anilyelin/Documents/Masterarbeit/AutomatedXAI/AutomatedXAI/src/data/parkinsons.csv")
-df = pd.read_csv("parkinsons.csv")
+df = pd.read_csv("../data/parkinsons.csv")
 st.write(df.head())
 csvFile = convert_df(df)
 st.download_button(label="Download as csv file",data=csvFile, file_name="parkinsons.csv")
