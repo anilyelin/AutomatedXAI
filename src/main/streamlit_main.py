@@ -746,20 +746,46 @@ with simplicityTab2:
     st.write("The following table is showing the k data instances")
     st.write(X_test.head(expK))
     # we now need to calculate the shap value for each data instance
+    rfc_simp_score = []
+    etc_simp_score = []
     for i in range(expK):
         instance = X_test.loc[[indexValue[i]]]
         #rfc shap values
         exp_rfc_shap_vals = explainer.shap_values(instance)
-        list2np = np.array(exp_rfc_shap_vals[1]).reshape(22,1)
-        rfc2df = pd.DataFrame(list2np)
+        rfc_np_arr = np.array(exp_rfc_shap_vals[1]).reshape(22,1)
+        rfc2df = pd.DataFrame(rfc_np_arr)
+        rfc_cutoff_count = int(rfc2df.lt(0.01).sum())
         #etc shap values
         exp_etc_shap_vals = explainer1.shap_values(instance)
-        etc2df = pd.DataFrame(exp_etc_shap_vals[1])
+        etc_np_arr = np.array(exp_etc_shap_vals[1]).reshape(22,1)
+        etc2df = pd.DataFrame(etc_np_arr)
+        etc_cutoff_count = int(etc2df.lt(0.01).sum())
         st.subheader("RFC SHAP Values")
-        st.write(rfc2df)
+        st.write("For instance: ", indexValue[i])
+        with st.expander("[RFC] Show particular shap values for given instance"):
+            st.write(rfc2df)
+        rfc_res = np.round(((X_test.shape[1]-rfc_cutoff_count)/X_test.shape[1])*100,2)
+        rfc_simp_score.append(rfc_res)
+        st.write("RFC Score for given instance: ", rfc_res,"%")
         st.subheader("ETC SHAP Values")
-        st.write(etc2df)
-        
+        with st.expander("[ETC] Show particular shap values for given instance"):
+            st.write(etc2df)
+        etc_res = np.round(((X_test.shape[1]-etc_cutoff_count)/X_test.shape[1])*100,2)
+        etc_simp_score.append(etc_res)
+        st.write("ETC Score for given instance: ", etc_res, "%")
+        st.write("**************************************************************************************")
+
+
+    st.subheader("[Simplicity Summary Table]")
+    st.info("Below one can find the results for the k instances")
+    rfc_simp_df = pd.DataFrame(rfc_simp_score)
+    rfc_simp_df.columns = ["RFC Simpl. Score"]
+    etc_simp_df = pd.DataFrame(etc_simp_score)
+    etc_simp_df.columns = ["ETC Simpl. Score"]
+    simp_df = pd.concat([rfc_simp_df, etc_simp_df], axis=1)
+    st.write(simp_df)
+    
+
 ###### PERMUTATION FEATURE IMPORTANCE COMPONENT ############################################################
 
 with permutationTab:
