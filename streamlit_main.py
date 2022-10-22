@@ -782,28 +782,28 @@ with permutationTab:
         st.write("Conclusion: Black Box Model <ETC> has a higher total of weight of: ", np.round(etc_eli5_sum,4))     
 
 st.write("******************************************************************************************************************")
+# this is the last part of the application where all the results of the five componentes
+# are shown in one place
 st.header("Summary")
-
 st.info("Below you can find all relevant tables and scores at one place")
 
+# Consistency Results
 st.subheader("Consistency Check")
-
 st.write(df_col_merged)
-
+st.write("Consistency Score: ", np.round(consistencyScore*100,2),"%")
 st.write("******************************************************************************************************************")
 
+# Robustness Results
 st.subheader("Robustness Check")
-
 st.write(tab2_df_col_merged)
-
 if robustnessScore_rfc < robustnessScore_etc:
     st.success("RFC model has a better score in terms of robustness")
-else:
-        
+else:    
     st.success("ETC model has a better score in terms of robustness")
 st.write("******************************************************************************************************************")
-st.subheader("Stability Check")
 
+# Stability Resukts
+st.subheader("Stability Check")
 st.write(tab3_table_merge)
 
 st.write("[RFC] Stability Score ", np.round(stability_score_rfc*100,2),"%")
@@ -814,8 +814,9 @@ if rfc_stabilityScore < etc_stabilityScore:
 else:
     st.success("ETC model has a better score in terms of stability component")
 st.write("******************************************************************************************************************")
-st.subheader("Simplicity Check")
 
+# Simplicity Results
+st.subheader("Simplicity Check")
 st.write(simp_df)
 
 st.write("[RFC] Final Score (Average): ", np.round(simp_rfc_final_score,2),"%")
