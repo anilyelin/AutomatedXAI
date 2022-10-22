@@ -9,9 +9,9 @@ To run this project on your local computer you need to perform the following ste
 git clone https://github.com/anilyelin/AutomatedXAI.git
 ```
 
-3. Create an environment based on the ```requirements.txt```file. 
+3. If you use Mac. Create an environment based on the ```environment_mac.yml```file. 
 ```bash
-conda create --name <env_name> --file requirements.txt
+conda create --name <env_name> --file environment_mac.yml
 ```
 
 4. Activate the prior created environment
