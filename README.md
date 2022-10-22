@@ -2,6 +2,16 @@
 This repository contains the Python based implementation of the proposed automated explainability checker framework in my master thesis. 
 To run this project on your local computer you need to perform the following steps:
 
+## Streamlit Cloud
+
+If you don't want to install the project on your PC, you can access it via your browser. 
+
+```
+https://automated-xai.streamlitapp.com/
+```
+
+## Local Installation
+
 1. Download [Anaconda](https://www.anaconda.com/) which makes it easy to create environments and installing relevant libraries
 
 2. Clone this project to your PC
