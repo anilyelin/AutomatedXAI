@@ -1,5 +1,5 @@
 __author__ = "Anil Yelin"
-__version__= "0.9"
+__version__= "1.0"
 
 import streamlit as st
 import pandas as pd
@@ -25,10 +25,10 @@ with st.sidebar:
     st.markdown("[Summary](#summary)")
     st.subheader("Help Section")
     st.write("You can download a manual which explains how to use this Streamlit App")
-    #with open("/Users/anilyelin/Documents/Masterarbeit/AutomatedXAI/AutomatedXAI/src/manual.pdf", "rb") as pdf_file:
-    #    PDFbyte = pdf_file.read()
+    with open("/Users/anilyelin/Documents/Masterarbeit/AutomatedXAI/AutomatedXAI/src/manual.pdf", "rb") as pdf_file:
+        PDFbyte = pdf_file.read()
 
-    #st.download_button(label="Download Documentation and Manual", data=PDFbyte, file_name="manaul.pdf")
+    st.download_button(label="Download Documentation and Manual", data=PDFbyte, file_name="manaul.pdf")
 
 #utility function
 @st.cache
@@ -74,7 +74,7 @@ def scoreCalculator(score_A, score_B):
         st.info("ETC achieved a higher score")
 
     
-st.title("Automated Explainability Checker Framework v0.9")
+st.title("Automated Explainability Checker Framework v1.0")
 st.text("This streamlit app is a prototype for the proposed explainability framework\n"
 "proposed in my master thesis")
 st.write("******************************************************************************************************************")
@@ -823,7 +823,7 @@ if simp_rfc_final_score > simp_etc_final_score:
     st.success("RFC has a better final score for simplicity component")
 else:
     st.success("ETC has a better final score for simplicity component")
-    
+
 st.subheader("Permutation Feature Importance")
 if rfc_eli5_sum >= etc_eli5_sum:
     st.write("Conclusion: Black Box Model <RFC> has a higher total of weight of: ", np.round(rfc_eli5_sum,4))
