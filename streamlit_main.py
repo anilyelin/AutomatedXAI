@@ -175,7 +175,7 @@ There are in total five components. Both black box models will be analysed with 
 to the components. The implementation of the framework component is the upcoming section.
 In each component there will be one black box model which will perform better in terms
 of explainability.""")
-st.image("method.png", width=250, caption="Architecture Overview")
+#st.image("method.png", width=250, caption="Architecture Overview")
 
 ###############################################################################################################
 indexValue = list(X_test.index) #all index values of the X_test set will be stored in this list
