@@ -15,6 +15,7 @@ from eli5.sklearn import PermutationImportance
 from numpy import linalg as LA
 from scipy import spatial
 from sklearn.preprocessing import LabelEncoder
+from pandas.api.types import is_numeric_dtype
 
 
 def automatedChange(df, index):
@@ -76,16 +77,41 @@ if csvFile is not None:
     st.success("File loaded successfully")
     customDF = pd.read_csv(csvFile)
     st.write(customDF)
-    labelEncoder = LabelEncoder()
-    customDF['variety'] = labelEncoder.fit_transform(customDF['variety'])
-    st.info("After applying Label Encoding to non numerical columns")
-    st.write(customDF)
+    #labelEncoder = LabelEncoder()
+    #customDF['variety'] = labelEncoder.fit_transform(customDF['variety'])
+    #st.info("After applying Label Encoding to non numerical columns")
+    #st.write(customDF)
     st.info("Please select the column which is the target for the model training")
     targetColumn = st.selectbox("Select the target", customDF.columns)
     st.write("The selected target is", targetColumn)
 
 else:
     st.error("An error occured while loading the file")
+
+st.info("Checking for columns with non numeric data")
+# check if all cols are numeric
+def checkColsForNumericValues(df):
+    nonNumericCols = []
+    for col in df.columns:
+        if is_numeric_dtype(customDF[col])==False:
+            nonNumericCols.append(col)
+            st.write(col, " has no numeric values")
+    return nonNumericCols
+
+def applyLabelEncoding(df,cols):
+    labelEncoder = LabelEncoder()
+    for col in cols:
+        df[col] = labelEncoder.fit_transform(df[col])
+    return df
+
+checkColsForNumericValues(customDF)
+
+st.info("Please press the button below to apply Label Encoding for columns without numeric data")
+if st.button("Apply Label Encoding"):
+    st.write("Calling function for label encoding...")
+    customDF = applyLabelEncoding(customDF, checkColsForNumericValues(customDF))
+    st.write("Dataset after label encoding")
+    st.write(customDF)
 
 
 ### MODEL TRAINING SECTION ########################################
@@ -204,89 +230,89 @@ consistencyTab, robustnessTab, simplicityTab, permutationTab = st.tabs(["Compone
 ,"Component Simplicity","Component Feature Importance"])
 
 ##### CONSISTENCY COMPONENT ########################################################################################
+with consistencyTab:
+    st.subheader("Framework Component - Consistency")
+    expander1 = st.expander("See explanation")
+    expander1.write("""The consistency component will check local explanations of the two black box
+    models and compare them against each other. The consistency check will be done for
+    k datapoints. The key assumption is that the explanations for a given data instance
+    should deviate with respect to given theta threshold""")
 
-st.subheader("Framework Component - Consistency")
-expander1 = st.expander("See explanation")
-expander1.write("""The consistency component will check local explanations of the two black box
-models and compare them against each other. The consistency check will be done for
-k datapoints. The key assumption is that the explanations for a given data instance
-should deviate with respect to given theta threshold""")
+    kNumber = st.number_input("Please enter a value for parameter k", min_value=1, max_value=len(X_test)-1, step=1)
+    consistencyThreshold = st.number_input("Please enter a value for threshold theta", min_value=0.01, max_value=1.0, step=0.01)
+    distanceMeasure = st.selectbox("Choose distance measure",['Euclidean Distance','Cosine Similarity'])
+    st.write("Distance Measure is: ", distanceMeasure)
+    st.write("Entered number k is ",kNumber)
+    st.write("The following table is showing the k data instances with its corresponding values")
+    st.write(X_test.head(kNumber))
+    # storing the results in a list for the table
+    tableEuclidean = []
+    tableTheta = []
+    tableIndex = []
+    with st.spinner('Wait for it...'):
+        for i in range(kNumber):
+            instance = X_test.loc[[indexValue[i]]]
+            shap_values = explainer.shap_values(instance)
+            #extra trees
+            shap_values1 = explainer1.shap_values(instance)
+            #
+            st.write("**"+modelChoice+"** SHAP Force Plot for instance with index: ", indexValue[i])
+            st_shap(shap.force_plot(explainer.expected_value[1], shap_values[1], instance))
+            #
+            st.write("**Extra Trees Classifier** SHAP force plot for instance with index ", indexValue[i])
+            st_shap(shap.force_plot(explainer1.expected_value[1], shap_values1[1], instance))
+            fx1 = explainer.expected_value[1]+np.sum(shap_values[1])
+            fx2 = explainer1.expected_value[1]+np.sum(shap_values1[1])
+            consistencyDifference = round(np.abs(fx1-fx2),4)
+            #calculate euclidean distance between shap vectors
+            consistencyEuclideanDistance = np.round(LA.norm(shap_values[1]-shap_values1[1]),4)
+            #calculate cosine similarity
+            cosineSimilarity = 1-np.dot(shap_values[1],shap_values1[1].T)/(LA.norm(shap_values[1])*(LA.norm(shap_values1[1])))
+            
+            if distanceMeasure == "Euclidean Distance":
+                tab1_col1, tab1_col2 = st.columns(2)
+                #tab1_col1.metric(label="Explanation Difference", value=consistencyDifference)
+                #storing results in a table
+                tableEuclidean.append(consistencyEuclideanDistance)
+                tableTheta.append(round(consistencyThreshold-consistencyEuclideanDistance,4))
+                tableIndex.append(indexValue[i])
+                tab1_col1.metric(label="Euclidean Distance", value=consistencyEuclideanDistance)
+                tab1_col2.metric(label="Threshold Delta", value=round(consistencyThreshold-consistencyEuclideanDistance,4))
+            else:
+                tab1_col1, tab1_col2 = st.columns(2)
+                #tab1_col1.metric(label="Explanation Difference", value=consistencyDifference)
+                tab1_col1.metric(label="Cosine Similarity", value=np.round(cosineSimilarity,4))
+                tab1_col2.metric(label="Threshold Delta", value=round(consistencyThreshold-consistencyEuclideanDistance,4))
 
-kNumber = st.number_input("Please enter a value for parameter k", min_value=1, max_value=len(X_test)-1, step=1)
-consistencyThreshold = st.number_input("Please enter a value for threshold theta", min_value=0.01, max_value=1.0, step=0.01)
-distanceMeasure = st.selectbox("Choose distance measure",['Euclidean Distance','Cosine Similarity'])
-st.write("Distance Measure is: ", distanceMeasure)
-st.write("Entered number k is ",kNumber)
-st.write("The following table is showing the k data instances with its corresponding values")
-st.write(X_test.head(kNumber))
-# storing the results in a list for the table
-tableEuclidean = []
-tableTheta = []
-tableIndex = []
-with st.spinner('Wait for it...'):
-    for i in range(kNumber):
-        instance = X_test.loc[[indexValue[i]]]
-        shap_values = explainer.shap_values(instance)
-        #extra trees
-        shap_values1 = explainer1.shap_values(instance)
-        #
-        st.write("**"+modelChoice+"** SHAP Force Plot for instance with index: ", indexValue[i])
-        st_shap(shap.force_plot(explainer.expected_value[1], shap_values[1], instance))
-        #
-        st.write("**Extra Trees Classifier** SHAP force plot for instance with index ", indexValue[i])
-        st_shap(shap.force_plot(explainer1.expected_value[1], shap_values1[1], instance))
-        fx1 = explainer.expected_value[1]+np.sum(shap_values[1])
-        fx2 = explainer1.expected_value[1]+np.sum(shap_values1[1])
-        consistencyDifference = round(np.abs(fx1-fx2),4)
-        #calculate euclidean distance between shap vectors
-        consistencyEuclideanDistance = np.round(LA.norm(shap_values[1]-shap_values1[1]),4)
-        #calculate cosine similarity
-        cosineSimilarity = 1-np.dot(shap_values[1],shap_values1[1].T)/(LA.norm(shap_values[1])*(LA.norm(shap_values1[1])))
+            tab1_difference = consistencyThreshold-consistencyEuclideanDistance
+            if tab1_difference >= 0:
+                st.success("Threshold is maintained")
+            else:
+                st.error("Threshold is not maintained")
+
+            st.write("*******************************************************************************************")
+        st.success('Calculation of SHAP values for the k instances was successful!')
+        #for i in range(kNumber):
+        #    instance = X_test.loc[[indexValue[i]]]
+        #    shap_values = explainer.shap_values(instance)
+        #    st.write("++"+modelChoice,"++SHAP Force Plot for instance with index: ", indexValue[i])
+        #    st_shap(shap.force_plot(explainer.expected_value[1], shap_values[1], instance))
+
         
-        if distanceMeasure == "Euclidean Distance":
-            tab1_col1, tab1_col2 = st.columns(2)
-            #tab1_col1.metric(label="Explanation Difference", value=consistencyDifference)
-            #storing results in a table
-            tableEuclidean.append(consistencyEuclideanDistance)
-            tableTheta.append(round(consistencyThreshold-consistencyEuclideanDistance,4))
-            tableIndex.append(indexValue[i])
-            tab1_col1.metric(label="Euclidean Distance", value=consistencyEuclideanDistance)
-            tab1_col2.metric(label="Threshold Delta", value=round(consistencyThreshold-consistencyEuclideanDistance,4))
-        else:
-            tab1_col1, tab1_col2 = st.columns(2)
-            #tab1_col1.metric(label="Explanation Difference", value=consistencyDifference)
-            tab1_col1.metric(label="Cosine Similarity", value=np.round(cosineSimilarity,4))
-            tab1_col2.metric(label="Threshold Delta", value=round(consistencyThreshold-consistencyEuclideanDistance,4))
-
-        tab1_difference = consistencyThreshold-consistencyEuclideanDistance
-        if tab1_difference >= 0:
-            st.success("Threshold is maintained")
-        else:
-            st.error("Threshold is not maintained")
-
-        st.write("*******************************************************************************************")
-    st.success('Calculation of SHAP values for the k instances was successful!')
-    #for i in range(kNumber):
-    #    instance = X_test.loc[[indexValue[i]]]
-    #    shap_values = explainer.shap_values(instance)
-    #    st.write("++"+modelChoice,"++SHAP Force Plot for instance with index: ", indexValue[i])
-    #    st_shap(shap.force_plot(explainer.expected_value[1], shap_values[1], instance))
-
-    
-st.subheader("[Consistency] Summary Table")
-st.info("Below you can see a table with all results with respect to your parameters.")
-euclideanDF = pd.DataFrame(tableEuclidean)
-thetaDF = pd.DataFrame(tableTheta)
-indexDF = pd.DataFrame(tableIndex)
-euclideanDF.columns = ["Euclidean Distance SHAP Vectors: RFC <--> ETC"]
-thetaDF.columns = ["Threshold Delta "+str(consistencyThreshold)]
-indexDF.columns = ["Data Instance (index)"]
-df_col_merged = pd.concat([indexDF, euclideanDF, thetaDF], axis=1)
-df_col_merged.index += 1
-st.write(df_col_merged)
-tableFile = convert_df(df_col_merged)
-st.download_button(label="Download results as csv file",data=tableFile, file_name="result_table_consistency.csv")
-st.write("Threshold of: ", consistencyThreshold, " is not maintained for ",int(thetaDF.lt(0).sum()) , " instances of ", kNumber, " instances (in total)")
+    st.subheader("[Consistency] Summary Table")
+    st.info("Below you can see a table with all results with respect to your parameters.")
+    euclideanDF = pd.DataFrame(tableEuclidean)
+    thetaDF = pd.DataFrame(tableTheta)
+    indexDF = pd.DataFrame(tableIndex)
+    euclideanDF.columns = ["Euclidean Distance SHAP Vectors: RFC <--> ETC"]
+    thetaDF.columns = ["Threshold Delta "+str(consistencyThreshold)]
+    indexDF.columns = ["Data Instance (index)"]
+    df_col_merged = pd.concat([indexDF, euclideanDF, thetaDF], axis=1)
+    df_col_merged.index += 1
+    st.write(df_col_merged)
+    tableFile = convert_df(df_col_merged)
+    st.download_button(label="Download results as csv file",data=tableFile, file_name="result_table_consistency.csv")
+    st.write("Threshold of: ", consistencyThreshold, " is not maintained for ",int(thetaDF.lt(0).sum()) , " instances of ", kNumber, " instances (in total)")
         
 ###### ROBUSTNESS COMPONENT ################################################################################################
 with robustnessTab:
