@@ -193,8 +193,8 @@ st.header("Explainability Checker Framework")
 st.write("""In the following tabs every can component of the proposed explainability 
 framework can be used for checking and evaluating the explainability of black box
 models with corresponding data""")
-consistencyTab, robustnessTab, stabilityTab, simplicityTab, simplicityTab2, permutationTab = st.tabs(["Component Consistency", "Component Robustness", 
-"Component Stability","Component Simplicity","Simplicity","Component Feature Importance"])
+consistencyTab, robustnessTab, stabilityTab, simplicityTab, permutationTab = st.tabs(["Component Consistency", "Component Robustness", 
+"Component Stability","Component Simplicity","Component Feature Importance"])
 
 ##### CONSISTENCY COMPONENT ########################################################################################
 with consistencyTab:
@@ -678,57 +678,15 @@ def calcNegativeSHAPScoreETC(indexVal):
     return df.lt(0).sum()
 
 with simplicityTab:
-    st.subheader("Framework Component - Simplicity")
-    expanderComponent4 = st.expander("See explanation")
-    expanderComponent4.write("""
-    The simplicity component will check a given explanation for its length.
-    The assumption for this component is that an explanation with fewer components
-    is more explainable compared to an explanation with more components.""")
-    simplicityKNumber = st.number_input("Please enter a value for parameter k", min_value=1, max_value=len(X_test))
-    st.write("Parameter k is: ", simplicityKNumber)
-    st.write(X_test.head(simplicityKNumber))
-    st.info("Calculating for each of the k data instances the non negative SHAP scores")
-    simplicity_tab_rfc = []
-    simplicity_tab_etc = []
-    for i in range(simplicityKNumber):
-        st.subheader("RFC")
-        res_rfc = calcNegativeSHAPScoreRFC(indexValue[i])
-        st.write("The number of negative SHAP scores for instance: ", indexValue[i], " is:", int(res_rfc), " of ", X_test.iloc[0].shape[0]," components")
-        simplicity_tab_rfc.append(int(res_rfc))
-        st.subheader("ETC")
-        res_etc = calcNegativeSHAPScoreETC(indexValue[i])
-        simplicity_tab_etc.append(int(res_etc))
-        st.write("The number of negative SHAP score for instance: ", indexValue[i], " is: ", int(res_etc), " of ", X_test.iloc[0].shape[0]," components")
-        st.write("*************************************************************************************")
-
-    st.subheader("[Simplicity] Summary Table")
-    st.info("Below you can find the summary table for the component simplicity")
-    simplicity_tab_rfc_df = pd.DataFrame(simplicity_tab_rfc)
-    simplicity_tab_etc_df = pd.DataFrame(simplicity_tab_etc)
-    simplicity_tab_rfc_df.columns = ["[RFC] Negative SHAP scores"]
-    simplicity_tab_etc_df.columns = ["[ETC] Negative SHAP scores"]
-    simplicity_tab_merged = pd.concat([simplicity_tab_rfc_df, simplicity_tab_etc_df],axis=1)
-    st.write(simplicity_tab_merged)
-    tableFile_simplicity = convert_df(simplicity_tab_merged)
-    rfc_sum = simplicity_tab_rfc_df["[RFC] Negative SHAP scores"].sum()
-    etc_sum = simplicity_tab_etc_df["[ETC] Negative SHAP scores"].sum()
-    denominator = simplicityKNumber*22
-    rfc_final_score = rfc_sum / denominator
-    etc_final_score = etc_sum / denominator
-    st.write("Sum of RFC: ", np.round(rfc_final_score*100, 4), "%")
-    st.write("Sum of ETC: ",np.round(etc_final_score*100,4), "%")
-    if rfc_final_score < etc_final_score:
-        st.success("RFC model has a better scoring in terms of the simplicity component")
-    else:
-        st.success("ETC model has a better scoring in terms of the simplicity component")
-    st.download_button(label="Download results as csv file",data=tableFile_simplicity, file_name="result_table_simplicity.csv")
-
-
-with simplicityTab2:
     st.subheader("Experimental Simplicity")
     expK = st.number_input("[Simplicity Cutoff] Please enter a value for parameter k", min_value=1, max_value=len(X_test), step=1)
     st.write("The entered number for parameter k is: ", expK)
-    cutoffThreshold= st.number_input("Please enter a cut off threshold", min_value=0.01, max_value=0.05, step=0.01)
+    st.info("SHAP values below the cut off threshold will be ignored since they don't contribute much to the final result")
+    cutoffThreshold= st.text_input("Please enter a cut off threshold", value=0.01)
+    try:
+        cutoffThreshold = float(cutoffThreshold)
+    except:
+        st.error("Please enter a number. Try again")
     st.write("The cutoff threshold is: ", cutoffThreshold)
     st.write("The following table is showing the k data instances")
     st.write(X_test.head(expK))
@@ -743,6 +701,7 @@ with simplicityTab2:
         exp_rfc_shap_vals = explainer.shap_values(instance)
         rfc_np_arr = np.array(exp_rfc_shap_vals[1]).reshape(22,1)
         rfc2df = pd.DataFrame(rfc_np_arr)
+        #here is the cutoff threshold hard coded
         rfc_cutoff_count = int(rfc2df.lt(0.01).sum())
         #etc shap values
         exp_etc_shap_vals = explainer1.shap_values(instance)
@@ -868,6 +827,7 @@ if rfc_eli5_sum >= etc_eli5_sum:
     st.write("Conclusion: Black Box Model <RFC> has a higher total of weight of: ", np.round(rfc_eli5_sum,4))
 else:
     st.write("Conclusion: Black Box Model <ETC> has a higher total of weight of: ", np.round(etc_eli5_sum,4))
+
 
 
 
