@@ -815,13 +815,15 @@ else:
 st.write("******************************************************************************************************************")
 st.subheader("Simplicity Check")
 
-st.write(simplicity_tab_merged)
+st.write(simp_df)
 
-if rfc_final_score < etc_final_score:
-    st.success("RFC model has a better scoring in terms of the simplicity component")
+st.write("[RFC] Final Score (Average): ", np.round(simp_rfc_final_score,2),"%")
+st.write("[ETC] Final Score (Average): ",np.round(simp_etc_final_score,2) ,"%")
+if simp_rfc_final_score > simp_etc_final_score:
+    st.success("RFC has a better final score for simplicity component")
 else:
-    st.success("ETC model has a better scoring in terms of the simplicity component")
-
+    st.success("ETC has a better final score for simplicity component")
+    
 st.subheader("Permutation Feature Importance")
 if rfc_eli5_sum >= etc_eli5_sum:
     st.write("Conclusion: Black Box Model <RFC> has a higher total of weight of: ", np.round(rfc_eli5_sum,4))
