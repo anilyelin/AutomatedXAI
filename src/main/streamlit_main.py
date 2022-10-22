@@ -25,10 +25,10 @@ with st.sidebar:
     st.markdown("[Summary](#summary)")
     st.subheader("Help Section")
     st.write("You can download a manual which explains how to use this Streamlit App")
-    with open("/Users/anilyelin/Documents/Masterarbeit/AutomatedXAI/AutomatedXAI/src/manual.pdf", "rb") as pdf_file:
-        PDFbyte = pdf_file.read()
+    #with open("/Users/anilyelin/Documents/Masterarbeit/AutomatedXAI/AutomatedXAI/src/manual.pdf", "rb") as pdf_file:
+    #    PDFbyte = pdf_file.read()
 
-    st.download_button(label="Download Documentation and Manual", data=PDFbyte, file_name="manaul.pdf")
+    #st.download_button(label="Download Documentation and Manual", data=PDFbyte, file_name="manaul.pdf")
 
 #utility function
 @st.cache
