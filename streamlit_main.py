@@ -16,6 +16,7 @@ from scipy import spatial
 from sklearn.preprocessing import LabelEncoder
 
 with st.sidebar:
+    st.header("Automated Explainability Checker Framework v1.0")
     st.subheader("Quick Navigation")
     st.markdown("[Dataset Overview](#dataset-overview)")
     st.markdown("[Model Training](#model-training)")
