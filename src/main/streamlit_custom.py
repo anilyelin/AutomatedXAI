@@ -79,6 +79,7 @@ with st.sidebar:
     st.header("Automated Explainability Checker Framework v1.0")
     st.subheader("Quick Navigation")
     st.markdown("[Dataset Overview](#dataset-overview)")
+    st.markdown("[Dataset Preparation](#dataset-preparation)")
     st.markdown("[Model Training](#model-training)")
     st.markdown("[Explainability Section](#explainability-section)")
     st.markdown("[Explainability Checker Framework Architecture](#explainability-checker-framework-architecture)")
@@ -113,7 +114,7 @@ else:
     st.error("An error occured while uploading the file. Please try again!")
     st.stop()
 
-
+st.header("Dataset preparation")
 st.info("Checking for columns with non numeric data")
 # check if all cols are numeric
 def checkColsForNumericValues(df):
@@ -143,7 +144,10 @@ if st.button("Apply Label Encoding"):
     st.write("Dataset after label encoding")
     st.write(customDF)
 
-
+st.write("If you want to drop specific columns of the dataset, use the button below")
+dropColumn = st.multiselect("Column", customDF.columns)
+if st.button("Drop Column"):
+    st.write("Calling function")
 ### MODEL TRAINING SECTION ########################################
 
 st.header("Model Training")
