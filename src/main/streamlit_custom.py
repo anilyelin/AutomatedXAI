@@ -89,17 +89,13 @@ if csvFile is not None:
     st.success("File loaded successfully")
     customDF = pd.read_csv(csvFile)
     st.write(customDF)
-    #labelEncoder = LabelEncoder()
-    #customDF['variety'] = labelEncoder.fit_transform(customDF['variety'])
-    #st.info("After applying Label Encoding to non numerical columns")
-    #st.write(customDF)
     st.info("Please select the column which is the target for the model training")
     targetColumn = st.selectbox("Select the target", customDF.columns)
     st.write("The selected target is", targetColumn)
     
 
 else:
-    st.error("An error occured while loading the file")
+    st.error("An error occured while uploading the file. Please try again!")
     st.stop()
 
 st.info("Checking for columns with non numeric data")
