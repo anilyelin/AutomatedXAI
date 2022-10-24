@@ -588,6 +588,8 @@ st.write("**********************************************************************
 # Robustness Results
 st.subheader("Robustness Check")
 st.write(tab2_df_col_merged)
+st.write("[RFC] Robustness Score", np.round(robustness_rfc_score*100,2),"%")
+st.write("[ETC] Robustness Score ", np.round(robustness_etc_score*100,2),"%")
 if robustnessScore_rfc < robustnessScore_etc:
     st.success("RFC model has a better score in terms of robustness")
 else:    
