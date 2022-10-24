@@ -62,6 +62,19 @@ def convert_df(df):
     return df.to_csv().encode('utf-8')
 
 
+def stabilityInstances(df):
+    """this function is responsible for 
+       selecting k neighboring data instances 
+       with the same target. 
+       input: 
+            training data (dataframe)
+       output:
+            k neighboring data instances
+        """
+    
+        
+
+
 with st.sidebar:
     st.header("Automated Explainability Checker Framework v1.0")
     st.subheader("Quick Navigation")
@@ -84,6 +97,8 @@ st.text("This streamlit app is a prototype for the proposed explainability frame
 st.header("Dataset Overview")
 st.info("""You can upload your own dataset to this prototyp. Please note that the 
     dataset has to be a csv file""")
+
+
 csvFile = st.file_uploader("Choose a .csv file", accept_multiple_files=False)
 if csvFile is not None:
     st.success("File loaded successfully")
@@ -92,11 +107,12 @@ if csvFile is not None:
     st.info("Please select the column which is the target for the model training")
     targetColumn = st.selectbox("Select the target", customDF.columns)
     st.write("The selected target is", targetColumn)
-    
+        
 
 else:
     st.error("An error occured while uploading the file. Please try again!")
     st.stop()
+
 
 st.info("Checking for columns with non numeric data")
 # check if all cols are numeric
@@ -114,7 +130,11 @@ def applyLabelEncoding(df,cols):
         df[col] = labelEncoder.fit_transform(df[col])
     return df
 
-checkColsForNumericValues(customDF)
+tmp = checkColsForNumericValues(customDF)
+if len(tmp) == 0:
+    st.success("No non numeric column has been found")
+else:
+    st.error("There is/are non numeric column(s) in the dataset")
 
 st.info("Please press the button below to apply Label Encoding for columns without numeric data")
 if st.button("Apply Label Encoding"):
