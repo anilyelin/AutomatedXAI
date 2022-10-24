@@ -142,7 +142,8 @@ with randomForest_tab:
     data = customDF
     #target = data['variety']
     target = data[targetColumn]
-    features = data.drop(columns=['variety'])
+    #features = data.drop(columns=['variety'])
+    features = data.drop(columns=[targetColumn])
     X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=test_size, random_state=random_state)
 
     rfc = RandomForestClassifier(n_estimators=n_estimators, random_state=random_state, max_depth=max_depth)
@@ -170,7 +171,8 @@ with extraTrees_tab:
     data = customDF
     #target = data['variety']
     target = data[targetColumn]
-    features = data.drop(columns=['variety'])
+    #features = data.drop(columns=['variety'])
+    features = data.drop(columns=[targetColumn])
     X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=test_size, random_state=random_state)
     etc = ExtraTreesClassifier(n_estimators=n_estimators, random_state=random_state, max_depth=max_depth)
     etc.fit(X_train, y_train)
