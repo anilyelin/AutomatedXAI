@@ -62,6 +62,18 @@ def convert_df(df):
     return df.to_csv().encode('utf-8')
 
 
+with st.sidebar:
+    st.header("Automated Explainability Checker Framework v1.0")
+    st.subheader("Quick Navigation")
+    st.markdown("[Dataset Overview](#dataset-overview)")
+    st.markdown("[Model Training](#model-training)")
+    st.markdown("[Explainability Section](#explainability-section)")
+    st.markdown("[Explainability Checker Framework Architecture](#explainability-checker-framework-architecture)")
+    st.markdown("[Explainability Checker Framework](#explainability-checker-framework)")
+    st.markdown("[Summary](#summary)")
+    st.subheader("Help Section")
+    st.write("You can download a [manual](https://github.com/anilyelin/AutomatedXAI/blob/main/src/manual.pdf) which explains how to use this Streamlit App")
+
 
 st.title("Automated Explainability Checker Framework v1.0 - for custom datasets")
 st.text("This streamlit app is a prototype for the proposed explainability framework\n"
