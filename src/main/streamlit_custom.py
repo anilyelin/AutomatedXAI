@@ -596,9 +596,10 @@ else:
     st.success("ETC model has a better score in terms of robustness")
 st.write("******************************************************************************************************************")
 # Stability Results
+st.subheader("Stability Results")
 
 # Simplicity Results
-
+st.subheader("Simplicity Results")
 
 # Permutation Feature Importance
 st.subheader("Permutation Feature Importance")
