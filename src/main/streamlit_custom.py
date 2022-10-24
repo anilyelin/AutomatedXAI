@@ -454,51 +454,78 @@ def calcNegativeSHAPScoreETC(indexVal):
     df = pd.DataFrame({"Score":shap_values[1][0,:]}) 
     return df.lt(0).sum()
 
-with simplicityTab:
-    st.subheader("Framework Component - Simplicity")
-    expanderComponent4 = st.expander("See explanation")
-    expanderComponent4.write("""
-    The simplicity component will check a given explanation for its length.
-    The assumption for this component is that an explanation with fewer components
-    is more explainable compared to an explanation with more components.""")
-    simplicityKNumber = st.number_input("Please enter a value for parameter k", min_value=1, max_value=len(X_test))
-    st.write("Parameter k is: ", simplicityKNumber)
-    st.write(X_test.head(simplicityKNumber))
-    st.info("Calculating for each of the k data instances the non negative SHAP scores")
-    simplicity_tab_rfc = []
-    simplicity_tab_etc = []
-    for i in range(simplicityKNumber):
-        st.subheader("RFC")
-        res_rfc = calcNegativeSHAPScoreRFC(indexValue[i])
-        st.write("The number of negative SHAP scores for instance: ", indexValue[i], " is:", int(res_rfc), " of ", X_test.iloc[0].shape[0]," components")
-        simplicity_tab_rfc.append(int(res_rfc))
-        st.subheader("ETC")
-        res_etc = calcNegativeSHAPScoreETC(indexValue[i])
-        simplicity_tab_etc.append(int(res_etc))
-        st.write("The number of negative SHAP score for instance: ", indexValue[i], " is: ", int(res_etc), " of ", X_test.iloc[0].shape[0]," components")
-        st.write("*************************************************************************************")
 
-    st.subheader("[Simplicity] Summary Table")
-    st.info("Below you can find the summary table for the component simplicity")
-    simplicity_tab_rfc_df = pd.DataFrame(simplicity_tab_rfc)
-    simplicity_tab_etc_df = pd.DataFrame(simplicity_tab_etc)
-    simplicity_tab_rfc_df.columns = ["[RFC] Negative SHAP scores"]
-    simplicity_tab_etc_df.columns = ["[ETC] Negative SHAP scores"]
-    simplicity_tab_merged = pd.concat([simplicity_tab_rfc_df, simplicity_tab_etc_df],axis=1)
-    st.write(simplicity_tab_merged)
-    tableFile_simplicity = convert_df(simplicity_tab_merged)
-    rfc_sum = simplicity_tab_rfc_df["[RFC] Negative SHAP scores"].sum()
-    etc_sum = simplicity_tab_etc_df["[ETC] Negative SHAP scores"].sum()
-    denominator = simplicityKNumber*22
-    rfc_final_score = rfc_sum / denominator
-    etc_final_score = etc_sum / denominator
-    st.write("Sum of RFC: ", np.round(rfc_final_score*100, 4), "%")
-    st.write("Sum of ETC: ",np.round(etc_final_score*100,4), "%")
-    if rfc_final_score < etc_final_score:
-        st.success("RFC model has a better scoring in terms of the simplicity component")
+with simplicityTab:
+    st.subheader("Experimental Simplicity")
+    expK = st.number_input("[Simplicity Cutoff] Please enter a value for parameter k", min_value=1, max_value=len(X_test), step=1)
+    st.write("The entered number for parameter k is: ", expK)
+    st.info("SHAP values below the cut off threshold will be ignored since they don't contribute much to the final result")
+    cutoffThreshold= st.text_input("Please enter a cut off threshold", value=0.01)
+    try:
+        cutoffThreshold = float(cutoffThreshold)
+    except:
+        st.error("Please enter a number. Try again")
+    st.write("The cutoff threshold is: ", cutoffThreshold)
+    st.write("The following table is showing the k data instances")
+    st.write(X_test.head(expK))
+    # we now need to calculate the shap value for each data instance
+    rfc_simp_score = []
+    etc_simp_score = []
+    table_index_simp = []
+    for i in range(expK):
+        table_index_simp.append(indexValue[i])
+        instance = X_test.loc[[indexValue[i]]]
+        #rfc shap values
+        exp_rfc_shap_vals = explainer.shap_values(instance)
+        rfc_shape = np.array(exp_rfc_shap_vals[1]).shape
+        rfc_np_arr = np.array(exp_rfc_shap_vals[1]).reshape(rfc_shape[::-1])
+        rfc2df = pd.DataFrame(rfc_np_arr)
+        #here is the cutoff threshold hard coded
+        rfc_cutoff_count = int(rfc2df.lt(0.01).sum())
+        #etc shap values
+        exp_etc_shap_vals = explainer1.shap_values(instance)
+        etc_shape = np.array(exp_etc_shap_vals[1]).shape
+        etc_np_arr = np.array(exp_etc_shap_vals[1]).reshape(etc_shape[::-1])
+        etc2df = pd.DataFrame(etc_np_arr)
+        etc_cutoff_count = int(etc2df.lt(0.01).sum())
+        st.subheader("RFC SHAP Values")
+        st.write("For instance: ", indexValue[i])
+        with st.expander("[RFC] Show particular shap values for given instance"):
+            st.write(rfc2df)
+        rfc_res = np.round(((X_test.shape[1]-rfc_cutoff_count)/X_test.shape[1])*100,2)
+        rfc_simp_score.append(rfc_res)
+        st.write("RFC Score for given instance: ", rfc_res,"%")
+        st.subheader("ETC SHAP Values")
+        with st.expander("[ETC] Show particular shap values for given instance"):
+            st.write(etc2df)
+        etc_res = np.round(((X_test.shape[1]-etc_cutoff_count)/X_test.shape[1])*100,2)
+        etc_simp_score.append(etc_res)
+        st.write("ETC Score for given instance: ", etc_res, "%")
+        st.write("**************************************************************************************")
+
+
+    st.subheader("[Simplicity Summary Table]")
+    st.info("Below one can find the results for the k instances")
+    table_index_simp_df = pd.DataFrame(table_index_simp)
+    table_index_simp_df.columns = ["Index"]
+    rfc_simp_df = pd.DataFrame(rfc_simp_score)
+    rfc_simp_df.columns = ["RFC Simpl. Score"]
+    etc_simp_df = pd.DataFrame(etc_simp_score)
+    etc_simp_df.columns = ["ETC Simpl. Score"]
+    simp_df = pd.concat([table_index_simp_df, rfc_simp_df, etc_simp_df], axis=1)
+    simp_df.index += 1
+    st.write(simp_df)
+
+    simp_rfc_final_score = (rfc_simp_df["RFC Simpl. Score"].sum())/expK
+    simp_etc_final_score = (etc_simp_df["ETC Simpl. Score"].sum())/expK
+    st.write("[RFC] Final Score (Average): ", np.round(simp_rfc_final_score,2),"%")
+    st.write("[ETC] Final Score (Average): ",np.round(simp_etc_final_score,2) ,"%")
+    if simp_rfc_final_score > simp_etc_final_score:
+        st.success("RFC has a better final score for simplicity component")
     else:
-        st.success("ETC model has a better scoring in terms of the simplicity component")
-    st.download_button(label="Download results as csv file",data=tableFile_simplicity, file_name="result_table_simplicity.csv")
+        st.success("ETC has a better final score for simplicity component")
+
+
 ###### PERMUTATION FEATURE IMPORTANCE COMPONENT ############################################################
 
 
