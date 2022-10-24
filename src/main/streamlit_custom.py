@@ -577,7 +577,11 @@ with permutationTab:
 
 
 
-
-
-
 st.header("Summary")
+st.info("Below you can find all relevant tables and scores at one place")
+
+# Consistency Results
+st.subheader("Consistency Check")
+st.write(df_col_merged)
+st.write("Consistency Score: ", np.round(consistencyScore*100,2),"%")
+st.write("******************************************************************************************************************")
