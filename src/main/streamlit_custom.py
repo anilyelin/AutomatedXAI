@@ -598,9 +598,18 @@ st.write("**********************************************************************
 # Stability Results
 st.subheader("Stability Results")
 
+
+st.write("******************************************************************************************************************")
 # Simplicity Results
 st.subheader("Simplicity Results")
-
+st.write(simp_df)
+st.write("[RFC] Final Score (Average): ", np.round(simp_rfc_final_score,2),"%")
+st.write("[ETC] Final Score (Average): ",np.round(simp_etc_final_score,2) ,"%")
+if simp_rfc_final_score > simp_etc_final_score:
+    st.success("RFC has a better final score for simplicity component")
+else:
+    st.success("ETC has a better final score for simplicity component")
+st.write("******************************************************************************************************************")
 # Permutation Feature Importance
 st.subheader("Permutation Feature Importance")
 if rfc_eli5_sum >= etc_eli5_sum:
