@@ -25,7 +25,7 @@ with st.sidebar:
     st.markdown("[Explainability Checker Framework](#explainability-checker-framework)")
     st.markdown("[Summary](#summary)")
     st.subheader("Help Section")
-    st.write("You can download a manual which explains how to use this Streamlit App")
+    st.write("You can download a [manual](https://github.com/anilyelin/AutomatedXAI/blob/main/src/manual.pdf) which explains how to use this Streamlit App")
     #with open("https://raw.githubusercontent.com/anilyelin/AutomatedXAI/main/src/manual.pdf", "rb") as pdf_file:
     #    PDFbyte = pdf_file.read()
 
