@@ -84,9 +84,11 @@ if csvFile is not None:
     st.info("Please select the column which is the target for the model training")
     targetColumn = st.selectbox("Select the target", customDF.columns)
     st.write("The selected target is", targetColumn)
+    
 
 else:
     st.error("An error occured while loading the file")
+    st.stop()
 
 st.info("Checking for columns with non numeric data")
 # check if all cols are numeric
