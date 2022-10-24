@@ -315,6 +315,8 @@ with consistencyTab:
     tableFile = convert_df(df_col_merged)
     st.download_button(label="Download results as csv file",data=tableFile, file_name="result_table_consistency.csv")
     st.write("Threshold of: ", consistencyThreshold, " is not maintained for ",int(thetaDF.lt(0).sum()) , " instances of ", kNumber, " instances (in total)")
+    consistencyScore = (kNumber-int(thetaDF.lt(0).sum()))/kNumber
+    st.write("Consistency Score: ", np.round(consistencyScore*100,2),"%")
         
 ###### ROBUSTNESS COMPONENT ################################################################################################
 with robustnessTab:
