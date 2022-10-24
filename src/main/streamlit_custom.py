@@ -595,3 +595,14 @@ if robustnessScore_rfc < robustnessScore_etc:
 else:    
     st.success("ETC model has a better score in terms of robustness")
 st.write("******************************************************************************************************************")
+# Stability Results
+
+# Simplicity Results
+
+
+# Permutation Feature Importance
+st.subheader("Permutation Feature Importance")
+if rfc_eli5_sum >= etc_eli5_sum:
+    st.write("Conclusion: Black Box Model <RFC> has a higher total of weight of: ", np.round(rfc_eli5_sum,4))
+else:
+    st.write("Conclusion: Black Box Model <ETC> has a higher total of weight of: ", np.round(etc_eli5_sum,4))
