@@ -115,6 +115,7 @@ else:
     st.stop()
 
 st.header("Dataset preparation")
+st.subheader("Analyzing columns")
 st.info("Checking for columns with non numeric data")
 # check if all cols are numeric
 def checkColsForNumericValues(df):
@@ -143,7 +144,7 @@ if st.button("Apply Label Encoding"):
     customDF = applyLabelEncoding(customDF, checkColsForNumericValues(customDF))
     st.write("Dataset after label encoding")
     st.write(customDF)
-
+st.subheader("Drop columns")
 st.write("If you want to drop specific columns of the dataset, use the button below")
 dropColumn = st.multiselect("Column", customDF.columns)
 if st.button("Drop Column"):
