@@ -680,7 +680,7 @@ def calcNegativeSHAPScoreETC(indexVal):
     return df.lt(0).sum()
 
 with simplicityTab:
-    st.subheader("Experimental Simplicity")
+    st.subheader("Simplicity")
     expK = st.number_input("[Simplicity Cutoff] Please enter a value for parameter k", min_value=1, max_value=len(X_test), step=1)
     st.write("The entered number for parameter k is: ", expK)
     st.info("SHAP values below the cut off threshold will be ignored since they don't contribute much to the final result")
