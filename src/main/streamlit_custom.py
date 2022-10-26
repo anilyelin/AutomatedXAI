@@ -277,8 +277,8 @@ st.header("Explainability Checker Framework")
 st.write("""In the following tabs every can component of the proposed explainability 
 framework can be used for checking and evaluating the explainability of black box
 models with corresponding data""")
-consistencyTab, robustnessTab, simplicityTab, permutationTab = st.tabs(["Component Consistency", "Component Robustness"
-,"Component Simplicity","Component Feature Importance"])
+consistencyTab, robustnessTab, stabilityTab, simplicityTab, permutationTab = st.tabs(["Component Consistency", "Component Robustness",
+"Component Stability","Component Simplicity","Component Feature Importance"])
 
 ##### CONSISTENCY COMPONENT ########################################################################################
 with consistencyTab:
@@ -490,8 +490,72 @@ with robustnessTab:
         st.success("ETC model has a better score in terms of robustness")
 
 
+def findNeighbors(df, k):
+    """ this function searches for neighboring 
+        data instances
+        input:
+              df: pandas dataframe
+              k: parameter for the amount of data instances
+        returns:
+              neighbors: list of tuples with neighboring instances
+    """
+    # get index values of df
+    sortedList = np.sort(X_test.index)
+    neighbors = []
+    for i in range(k-1):
+        if np.abs(sortedList[i]-sortedList[i+1]) != 1:
+            continue
+        else:
+            neighbors.append((sortedList[i],sortedList[i+1]))
+    return neighbors
+    
+def calcExp(df, arr,stabilityTheta):
+    for elem in arr:
+        instance_a = X_test.loc[[elem[0]]]
+        instance_b = X_test.loc[[elem[1]]]
+        #rfc shap values
+        shap_values_a = explainer.shap_values(instance_a)
+        shap_values_b = explainer.shap_values(instance_b)
+        #etc shap values
+        shap_values_a_etc = explainer1.shap_values(instance_a)
+        shap_values_b_etc = explainer1.shap_values(instance_b)
+        st.subheader("RFC")
+        st.write("Data Instance Index: ", elem[0])
+        st_shap(shap.force_plot(explainer.expected_value[1], shap_values_a[1], instance_a))
+        st.write("Data Instance Index:",elem[1])
+        st_shap(shap.force_plot(explainer.expected_value[1], shap_values_b[1], instance_b))
+        #calculation of eucl norm for rfc
+        euclideanNorm_rfc_stability = LA.norm(shap_values_a[1]-shap_values_b[1])
+        #calculation of rfc delta value
+        stability_delta_rfc = stabilityTheta-euclideanNorm_rfc_stability
+        #streamlit metric definition
+        rfc_stability_col1, rfc_stability_col2 = st.columns(2)
+        rfc_stability_col1.metric(label="[RFC] Euclidean Distance", value=np.round(euclideanNorm_rfc_stability,4))
+        rfc_stability_col2.metric(label="[RFC]Threshold Delta", value=np.round(stability_delta_rfc,4))
+        st.subheader("ETC")
+        st.write("Data Instance Index: ", elem[0])
+        st_shap(shap.force_plot(explainer1.expected_value[1], shap_values_a_etc[1], instance_a))
+        st.write("Data Instance Index: ", elem[1])
+        st_shap(shap.force_plot(explainer1.expected_value[1], shap_values_b_etc[1], instance_b))
+        #calculation of eucl norm for etc
+        euclideanNorm_etc_stability = LA.norm(shap_values_a_etc[1]-shap_values_b_etc[1])
+        #calculation of etc delta value
+        stability_delta_etc = stabilityTheta-euclideanNorm_etc_stability
+        #streamlit metric definition
+        etc_stability_col1, etc_stability_col2 = st.columns(2)
+        etc_stability_col1.metric(label="[ETC] Euclidean Distance", value=np.round(euclideanNorm_etc_stability,4))
+        etc_stability_col2.metric(label="[ETC]Threshold Delta", value=np.round(stability_delta_etc,4))
+        st.write("************************************************************************")
 
-
+with stabilityTab:
+    st.subheader("Framework Component Stability ")
+    stabilityK = st.number_input("[Stability] Please enter a value for parameter k", min_value=1, max_value=len(X_test), step=1, value=len(X_test)-1)
+    st.write("Parameter k is: ", stabilityK)
+    stabilityTheta = st.number_input("[Stability] Please enter a value for parameter theta", min_value=0.01, max_value=0.5, step=0.01)
+    st.write("Parameter theta is:", stabilityTheta)
+    st.write(X_test.head(stabilityK))
+    neighbors = findNeighbors(X_test, stabilityK)
+    calcExp(X_test, neighbors,stabilityTheta)
 
 
 ##### SIMPLICITY COMPONENT ##################################################################################
@@ -511,7 +575,7 @@ def calcNegativeSHAPScoreETC(indexVal):
 
 
 with simplicityTab:
-    st.subheader("Experimental Simplicity")
+    st.subheader("Framework Component Simplicity")
     expK = st.number_input("[Simplicity Cutoff] Please enter a value for parameter k", min_value=1, max_value=len(X_test), step=1)
     st.write("The entered number for parameter k is: ", expK)
     st.info("SHAP values below the cut off threshold will be ignored since they don't contribute much to the final result")
