@@ -146,9 +146,23 @@ if st.button("Apply Label Encoding"):
     st.write(customDF)
 st.subheader("Drop columns")
 st.write("If you want to drop specific columns of the dataset, use the button below")
+
+def dropColumns(df, cols):
+    """ this function will drop columns from dataset
+    input:
+        df: dataframe
+        cols: list
+    returns:
+        df: dataframe with dropped columns"""
+    df = df.drop(columns=cols)
+    return df
+
 dropColumn = st.multiselect("Column", customDF.columns)
 if st.button("Drop Column"):
     st.write("Calling function")
+    customDF = dropColumns(customDF, dropColumn)
+    st.write("Dataset after dropping columns")
+    st.write(customDF)
 ### MODEL TRAINING SECTION ########################################
 
 st.header("Model Training")
