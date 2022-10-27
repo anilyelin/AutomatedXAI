@@ -54,7 +54,7 @@ streamlit run streamlit-custom.py
 
 ## Architecture
 
-<img src="https://github.com/anilyelin/AutomatedXAI/blob/main/src/main/method.png" alt="drawing" width="300"/>
+<img src="https://github.com/anilyelin/AutomatedXAI/blob/main/method.png" alt="drawing" width="300"/>
 
 ### Screenshots
 
