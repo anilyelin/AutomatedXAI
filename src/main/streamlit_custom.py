@@ -519,8 +519,9 @@ def calcExp(df, arr,stabilityTheta):
         targets.append([str(customDF.loc[[elem[0]],[targetColumn]].values[0]).replace("[","").replace("]",""),str(customDF.loc[[elem[1]],[targetColumn]].values[0]).replace("[","").replace("]","")])
     targetDF = pd.DataFrame(targets, columns=["Target i", "Target i+1"])
     targetDF.index += 1
-    stabilityConcatDF = pd.concat([toDF,targetDF ],axis=1)
+    stabilityConcatDF = pd.concat([toDF,targetDF],axis=1)
     st.write(stabilityConcatDF)
+    scores = []
     for elem in arr:
         instance_a = X_test.loc[[elem[0]]]
         instance_b = X_test.loc[[elem[1]]]
@@ -557,6 +558,7 @@ def calcExp(df, arr,stabilityTheta):
         #calculation of etc delta value
         stability_delta_etc = stabilityTheta-euclideanNorm_etc_stability
         #streamlit metric definition
+        scores.append([euclideanNorm_rfc_stability,euclideanNorm_etc_stability])
         etc_stability_col1, etc_stability_col2 = st.columns(2)
         etc_stability_col1.metric(label="[ETC] Euclidean Distance", value=np.round(euclideanNorm_etc_stability,4))
         etc_stability_col2.metric(label="[ETC]Threshold Delta", value=np.round(stability_delta_etc,4))
@@ -565,6 +567,13 @@ def calcExp(df, arr,stabilityTheta):
         else:
             st.error("[ETC] Threshold is not maintained")
         st.write("************************************************************************")
+    st.subheader("[Stability] Summary Table")
+    scoresDF = pd.DataFrame(scores,columns=["Eucl. Distance RTC","Eucl. Distance ETC"])
+    scoresDF.index += 1
+    stabilitySummaryDF = pd.concat([toDF,scoresDF],axis=1)
+    st.write(stabilitySummaryDF)
+    tableFile_stability = convert_df(stabilitySummaryDF)
+    st.download_button(label="Download results as csv file",data=tableFile_stability, file_name="result_table_stability.csv")
 
 with stabilityTab:
     st.subheader("Framework Component Stability ")
@@ -653,7 +662,8 @@ with simplicityTab:
     simp_df = pd.concat([table_index_simp_df, rfc_simp_df, etc_simp_df], axis=1)
     simp_df.index += 1
     st.write(simp_df)
-
+    tableFile_simplicity = convert_df(simp_df)
+    st.download_button(label="Download results as csv file",data=tableFile_simplicity, file_name="result_table_simplicity.csv")
     simp_rfc_final_score = (rfc_simp_df["RFC Simpl. Score"].sum())/expK
     simp_etc_final_score = (etc_simp_df["ETC Simpl. Score"].sum())/expK
     st.write("[RFC] Final Score (Average): ", np.round(simp_rfc_final_score,2),"%")
