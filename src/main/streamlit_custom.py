@@ -513,7 +513,14 @@ def calcExp(df, arr,stabilityTheta):
     st.write("The following neighboring data instances have been found with same target")
     toDF = pd.DataFrame(arr, columns=['Index i', 'Index i+1'])
     toDF.index += 1
-    st.write(toDF)
+    #st.write(toDF)
+    targets = []
+    for elem in arr:
+        targets.append([str(customDF.loc[[elem[0]],[targetColumn]].values[0]).replace("[","").replace("]",""),str(customDF.loc[[elem[1]],[targetColumn]].values[0]).replace("[","").replace("]","")])
+    targetDF = pd.DataFrame(targets, columns=["Target i", "Target i+1"])
+    targetDF.index += 1
+    stabilityConcatDF = pd.concat([toDF,targetDF ],axis=1)
+    st.write(stabilityConcatDF)
     for elem in arr:
         instance_a = X_test.loc[[elem[0]]]
         instance_b = X_test.loc[[elem[1]]]
