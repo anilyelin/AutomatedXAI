@@ -1,7 +1,6 @@
 # AutomatedXAI
 This repository contains the Python based implementation of the proposed automated explainability checker framework in my master thesis. 
-To run this project on your local computer you need to perform the following steps:
-
+You can either run this project on your local PC or you can easily access it via Streamlit Cloud. The respective links are below.
 ## Streamlit Cloud
 
 If you don't want to install the project on your PC, you can access it via your browser. 
