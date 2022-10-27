@@ -510,6 +510,10 @@ def findNeighbors(df, k):
     return neighbors
     
 def calcExp(df, arr,stabilityTheta):
+    st.write("The following neighboring data instances have been found with same target")
+    toDF = pd.DataFrame(arr, columns=['Index i', 'Index i+1'])
+    toDF.index += 1
+    st.write(toDF)
     for elem in arr:
         instance_a = X_test.loc[[elem[0]]]
         instance_b = X_test.loc[[elem[1]]]
@@ -532,6 +536,10 @@ def calcExp(df, arr,stabilityTheta):
         rfc_stability_col1, rfc_stability_col2 = st.columns(2)
         rfc_stability_col1.metric(label="[RFC] Euclidean Distance", value=np.round(euclideanNorm_rfc_stability,4))
         rfc_stability_col2.metric(label="[RFC]Threshold Delta", value=np.round(stability_delta_rfc,4))
+        if stability_delta_rfc >= 0:
+            st.success("[RFC] Threshold is maintained")
+        else:
+            st.error("[RFC] Threshold is not maintained")
         st.subheader("ETC")
         st.write("Data Instance Index: ", elem[0])
         st_shap(shap.force_plot(explainer1.expected_value[1], shap_values_a_etc[1], instance_a))
@@ -545,6 +553,10 @@ def calcExp(df, arr,stabilityTheta):
         etc_stability_col1, etc_stability_col2 = st.columns(2)
         etc_stability_col1.metric(label="[ETC] Euclidean Distance", value=np.round(euclideanNorm_etc_stability,4))
         etc_stability_col2.metric(label="[ETC]Threshold Delta", value=np.round(stability_delta_etc,4))
+        if stability_delta_etc >= 0:
+            st.success("[ETC] Threshold is maintained")
+        else:
+            st.error("[ETC] Threshold is not maintained")
         st.write("************************************************************************")
 
 with stabilityTab:
