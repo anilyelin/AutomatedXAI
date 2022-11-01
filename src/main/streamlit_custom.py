@@ -111,7 +111,7 @@ if csvFile is not None:
         
 
 else:
-    st.error("An error occured while uploading the file. Please try again!")
+    st.error("No file was uploaded. Please try again!")
     st.stop()
 
 st.header("Dataset preparation")
