@@ -343,12 +343,6 @@ with consistencyTab:
 
             st.write("*******************************************************************************************")
         st.success('Calculation of SHAP values for the k instances was successful!')
-        #for i in range(kNumber):
-        #    instance = X_test.loc[[indexValue[i]]]
-        #    shap_values = explainer.shap_values(instance)
-        #    st.write("++"+modelChoice,"++SHAP Force Plot for instance with index: ", indexValue[i])
-        #    st_shap(shap.force_plot(explainer.expected_value[1], shap_values[1], instance))
-
         
     st.subheader("[Consistency] Summary Table")
     st.info("Below you can see a table with all results with respect to your parameters.")
@@ -391,8 +385,6 @@ with robustnessTab:
         st.write("Dataset after marginal changes")
         st.write(X_test.head(robustnessKNumber))
     
-
-
     # lists for the summary tables
     tableEuclidean_tab2 = []
     tableTheta_tab2 = []
@@ -402,10 +394,6 @@ with robustnessTab:
 
 
     st.write("Resulting changes of data instance with index: ")
-    
-
-    #st.write(X_test.head(robustnessKNumber))
-    ##### NEW FOR LOOP
     for i in range(robustnessKNumber):
         #copy
         st.subheader("Random Forest Classifier Results")
@@ -585,7 +573,6 @@ with stabilityTab:
     neighbors = findNeighbors(X_test, stabilityK)
     calcExp(X_test, neighbors,stabilityTheta)
 
-
 ##### SIMPLICITY COMPONENT ##################################################################################
 def calcNegativeSHAPScoreRFC(indexVal):
     instance = X_test.loc[[indexVal]]
@@ -675,8 +662,6 @@ with simplicityTab:
 
 
 ###### PERMUTATION FEATURE IMPORTANCE COMPONENT ############################################################
-
-
 with permutationTab:
     st.subheader("Framework Component - Permutation Feature Importance")
     expanderComponent5 = st.expander("See explanation")
@@ -710,7 +695,6 @@ with permutationTab:
         st.write("Conclusion: Black Box Model <ETC> has a higher total of weight of: ", np.round(etc_eli5_sum,4))
 
 
-
 st.header("Summary")
 st.info("Below you can find all relevant tables and scores at one place")
 
@@ -731,7 +715,6 @@ else:
 st.write("******************************************************************************************************************")
 # Stability Results
 st.subheader("Stability Results")
-
 
 st.write("******************************************************************************************************************")
 # Simplicity Results
