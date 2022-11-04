@@ -558,6 +558,8 @@ def calcExp(df, arr,stabilityTheta):
     st.subheader("[Stability] Summary Table")
     scoresDF = pd.DataFrame(scores,columns=["Eucl. Distance RTC","Eucl. Distance ETC"])
     scoresDF.index += 1
+    # defining a global variable here
+    global stabilitySummaryDF
     stabilitySummaryDF = pd.concat([toDF,scoresDF],axis=1)
     st.write(stabilitySummaryDF)
     tableFile_stability = convert_df(stabilitySummaryDF)
@@ -715,6 +717,8 @@ else:
 st.write("******************************************************************************************************************")
 # Stability Results
 st.subheader("Stability Results")
+
+st.write(stabilitySummaryDF)
 
 st.write("******************************************************************************************************************")
 # Simplicity Results
