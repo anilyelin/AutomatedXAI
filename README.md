@@ -7,12 +7,12 @@ If you don't want to install the project on your PC, you can access it via your 
 
 1. The main version (Parkinson Dataset)
 ```
-https://automated-xai.streamlitapp.com/
+https://automated-xai.streamlit.app
 ```
 
 2. The custom version (use your own datasets)
 ```
-https://automated-xai-custom.streamlitapp.com
+https://automated-xai-custom.streamlit.app
 ```
 
 ## Local Installation
