@@ -33,14 +33,9 @@ git clone https://github.com/anilyelin/AutomatedXAI.git
 
 - If you use Mac OS, use the ```environment_mac.yml```
   ```bash 
-     conda env create -n <env-name> --fiel environment_mac.yml
+     conda env create -n <env-name> --file environment_mac.yml
   ```
-
-3. If you use Mac. Create an environment based on the ```environment_mac.yml```file. 
-```bash
-conda create --name <env_name> --file environment_mac.yml
-```
-
+  
 4. Activate the prior created environment
 
 ```bash
