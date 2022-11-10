@@ -24,6 +24,18 @@ https://automated-xai-custom.streamlit.app
 git clone https://github.com/anilyelin/AutomatedXAI.git
 ```
 
+3. Based on your OS, there are different yml files for the creation of the environment.
+
+- If you use Windows, use the ```environment_windows.yml```
+  ```bash 
+     conda env create -n <env-name> --file environment_windows.yml
+  ```
+
+- If you use Mac OS, use the ```environment_mac.yml```
+  ```bash 
+     conda env create -n <env-name> --fiel environment_mac.yml
+  ```
+
 3. If you use Mac. Create an environment based on the ```environment_mac.yml```file. 
 ```bash
 conda create --name <env_name> --file environment_mac.yml
