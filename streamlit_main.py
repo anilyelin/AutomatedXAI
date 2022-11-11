@@ -685,6 +685,7 @@ with simplicityTab:
     st.write("The entered number for parameter k is: ", expK)
     st.info("SHAP values below the cut off threshold will be ignored since they don't contribute much to the final result")
     cutoffThreshold= st.text_input("Please enter a cut off threshold", value=0.01)
+    cutoffThreshold = float(cutoffThreshold)
     try:
         cutoffThreshold = float(cutoffThreshold)
     except:
@@ -704,12 +705,12 @@ with simplicityTab:
         rfc_np_arr = np.array(exp_rfc_shap_vals[1]).reshape(22,1)
         rfc2df = pd.DataFrame(rfc_np_arr)
         #here is the cutoff threshold hard coded
-        rfc_cutoff_count = int(rfc2df.lt(0.01).sum())
+        rfc_cutoff_count = int(rfc2df.lt(cutoffThreshold).sum())
         #etc shap values
         exp_etc_shap_vals = explainer1.shap_values(instance)
         etc_np_arr = np.array(exp_etc_shap_vals[1]).reshape(22,1)
         etc2df = pd.DataFrame(etc_np_arr)
-        etc_cutoff_count = int(etc2df.lt(0.01).sum())
+        etc_cutoff_count = int(etc2df.lt(cutoffThreshold).sum())
         st.subheader("RFC SHAP Values")
         st.write("For instance: ", indexValue[i])
         with st.expander("[RFC] Show particular shap values for given instance"):
