@@ -457,6 +457,8 @@ with robustnessTab:
     robustnessScore_etc = int(tab2_thetaDF_etc.lt(0).sum())
     if robustnessScore_rfc < robustnessScore_etc:
         st.success("RFC model has a better score in terms of robustness")
+    elif robustnessScore_rfc==robustnessScore_etc:
+        st.info("Both models perform equally well")
     else:
         st.success("ETC model has a better score in terms of robustness")
 
@@ -661,6 +663,8 @@ with stabilityTab:
     etc_stabilityScore = int(tab3_thetaDF_etc.lt(0).sum())
     if rfc_stabilityScore < etc_stabilityScore:
         st.success("RFC model has a better score in terms of stability component")
+    elif rfc_stabilityScore==etc_stabilityScore:
+        st.info("Both models perfom equally well")
     else:
         st.success("ETC model has a better score in terms of stability component")
     
@@ -741,10 +745,14 @@ with simplicityTab:
 
     simp_rfc_final_score = (rfc_simp_df["RFC Simpl. Score"].sum())/expK
     simp_etc_final_score = (etc_simp_df["ETC Simpl. Score"].sum())/expK
-    st.write("[RFC] Final Score (Average): ", np.round(simp_rfc_final_score,2),"%")
-    st.write("[ETC] Final Score (Average): ",np.round(simp_etc_final_score,2) ,"%")
+    simp_rfc_final_score = np.round(simp_rfc_final_score,2)
+    simp_etc_final_score = np.round(simp_etc_final_score,2)
+    st.write("[RFC] Final Score (Average): ", simp_rfc_final_score,"%")
+    st.write("[ETC] Final Score (Average): ", simp_etc_final_score ,"%")
     if simp_rfc_final_score > simp_etc_final_score:
         st.success("RFC has a better final score for simplicity component")
+    elif simp_rfc_final_score==simp_etc_final_score:
+        st.info("Both models perfom equally well")
     else:
         st.success("ETC has a better final score for simplicity component")
 
