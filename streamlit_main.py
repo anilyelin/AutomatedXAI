@@ -36,9 +36,9 @@ with st.sidebar:
 def convert_df(df):
     """this function converts a pandas dataframe into a 
        csv file with UTF-8 encoding.
-       params: 
-             pandas dataframe
-       returns:
+       Parameters: 
+             df : (Pandas dataframe) with training/test data
+       Returns:
              a csv file with UTF-8 encoding
     """
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
@@ -49,11 +49,12 @@ def automatedChange(df, index):
     """this function will apply automated
     marginal changes to a particular row in a pandas 
     dataframe 
-        input: 
-              df: pandas dataframe
-              index: integer to specify the row
-        returns:
-              modified pandas dataframe with respect to that row"""
+        Parameters: 
+              df: (Pandas dataframe) with training/test data 
+              index: (int) to specify the row
+        Returns:
+              modified pandas dataframe with respect to that row
+    """
     row_mean = df.loc[index].mean()
     row_std = df.loc[index].std()
     noise = np.random.normal(0.0, 0.5, len(df.columns))
@@ -65,10 +66,11 @@ def scoreCalculator(score_A, score_B):
     """this function compares the score of the two models and 
         displays the results as streamlit info 
         banner
-            input: score_A of model A
-                   score B of model B
-            return info banner with model
-            with higher score"""
+            Parameters: 
+                    score_A : (float) explainability score of model A
+                    score B : (float) explainability score of model B
+            Returns:
+    """
     if score_A > score_B:
         st.info("RFC achieved a higher score")
     else:
@@ -370,6 +372,7 @@ with robustnessTab:
     st.write("Resulting changes of data instance with index: ")
     
     #this for loop populates the respective data instance with the manually changed values
+    #the following list is used for the 22 columns of the dataset
     deltas = [c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16,c17,c18,c19,c20,c21]
     for i in range(22):
         #X_test.loc[X_test.index[0], [cols[i]]] = [(X_test.iloc[0][cols[i]])+deltas[i]]
@@ -670,6 +673,12 @@ with stabilityTab:
     
 ##### SIMPLICITY COMPONENT ##################################################################################
 def calcNegativeSHAPScoreRFC(indexVal):
+    """this function calculates the amount of negative SHAP scores
+        Parameters:
+                indexVal: (int) for determining a specific data instance
+        Returns:
+                Pandas dataframe with amount of negative SHAP scores
+    """
     instance = X_test.loc[[indexVal]]
     shap_values = explainer.shap_values(instance)
     #convert to dataframe
@@ -677,6 +686,12 @@ def calcNegativeSHAPScoreRFC(indexVal):
     return df.lt(0).sum()
 
 def calcNegativeSHAPScoreETC(indexVal):
+    """this function calculates the amount of negative SHAP scores
+        Parameters:
+                indexVal: (int) for determining a specific data instance
+        Returns: 
+                Pandas dataframe with amount of negative SHAP scores
+    """
     instance = X_test.loc[[indexVal]]
     shap_values = explainer1.shap_values(instance)
     #convert to dataframe
