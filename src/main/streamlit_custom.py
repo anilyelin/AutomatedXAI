@@ -1,5 +1,5 @@
 __author__ = "Anil Yelin"
-__version__= "0.9"
+__version__= "1.0"
 
 
 import streamlit as st
@@ -22,11 +22,13 @@ def automatedChange(df, index):
     """this function will apply automated
     marginal changes to a particular row in a pandas 
     dataframe 
-        input: 
-              df: pandas dataframe
+        Parameters: 
+              df: (Pandas dataframe) with training/test data
+              index: (int) index for specific data instances
               index: integer to specify the row
-        returns:
-              modified pandas dataframe with respect to that row"""
+        Returns:
+            modified Pandas dataframe with added Gaussian noise
+    """
     row_mean = df.loc[index].mean()
     row_std = df.loc[index].std()
     noise = np.random.normal(0.0, 0.5, len(df.columns))
@@ -39,10 +41,11 @@ def scoreCalculator(score_A, score_B):
     """this function compares the score of the two models and 
         displays the results as streamlit info 
         banner
-            input: score_A of model A
-                   score B of model B
-            return info banner with model
-            with higher score"""
+            Parameters:
+                score_A : (float) explainability score of model A
+                score_B : (float) explainability score of model B
+            Returns:
+    """
     if score_A > score_B:
         st.info("RFC achieved a higher score")
     else:
@@ -53,26 +56,13 @@ def scoreCalculator(score_A, score_B):
 def convert_df(df):
     """this function converts a pandas dataframe into a 
        csv file with UTF-8 encoding.
-       params: 
-             pandas dataframe
-       returns:
+       Parameters: 
+            df : (Pandas Dataframe) with training/test data
+       Returns:
              a csv file with UTF-8 encoding
     """
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
     return df.to_csv().encode('utf-8')
-
-
-def stabilityInstances(df):
-    """this function is responsible for 
-       selecting k neighboring data instances 
-       with the same target. 
-       input: 
-            training data (dataframe)
-       output:
-            k neighboring data instances
-        """
-    
-        
 
 
 with st.sidebar:
@@ -149,10 +139,10 @@ st.write("If you want to drop specific columns of the dataset, use the button be
 
 def dropColumns(df, cols):
     """ this function will drop columns from dataset
-    input:
-        df: dataframe
-        cols: list
-    returns:
+    Parameters:
+        df: (Pandas dataframe) with training/test data
+        cols: (Python list) with columns to be dropped
+    Returns:
         df: dataframe with dropped columns"""
     df = df.drop(columns=cols)
     return df
@@ -498,6 +488,14 @@ def findNeighbors(df, k):
     return neighbors
     
 def calcExp(df, arr,stabilityTheta):
+    """this function calculates the SHAP
+       explanations for the stability component
+       Parameters:
+                df: (Pandas dataframe) with training/test data
+                arr: (Python list) which contains neighboring data points
+                stabilityTheta: (float) parameter which acts as the upper bound
+        Returns:
+    """
     st.write("The following neighboring data instances have been found with same target")
     toDF = pd.DataFrame(arr, columns=['Index i', 'Index i+1'])
     toDF.index += 1
