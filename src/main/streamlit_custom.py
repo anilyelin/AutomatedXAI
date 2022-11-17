@@ -281,7 +281,7 @@ with consistencyTab:
 
     kNumber = st.number_input("Please enter a value for parameter k", min_value=1, max_value=len(X_test)-1, step=1)
     consistencyThreshold = st.number_input("Please enter a value for threshold theta", min_value=0.01, max_value=1.0, step=0.01)
-    distanceMeasure = st.selectbox("Choose distance measure",['Euclidean Distance','Cosine Similarity'])
+    distanceMeasure = st.selectbox("Choose distance measure",['Euclidean Distance'])
     st.write("Distance Measure is: ", distanceMeasure)
     st.write("Entered number k is ",kNumber)
     st.write("The following table is showing the k data instances with its corresponding values")
